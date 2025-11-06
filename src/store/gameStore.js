@@ -1,0 +1,48 @@
+// store/gameStore.js
+import { create } from 'zustand';
+
+const useGameStore = create((set) => ({
+  // Progress tracking
+  currentChapter: 'prologue', // prologue, origin, trials, vision, connection
+  completedChapters: [],
+  xp: 0,
+  unlockedSkills: [],
+  
+  // Audio state
+  musicEnabled: true,
+  sfxEnabled: true,
+  
+  // Dialogue state
+  currentDialogue: null,
+  dialogueHistory: [],
+  
+  // Actions
+  completeChapter: (chapter) => set((state) => ({
+    completedChapters: [...state.completedChapters, chapter],
+    xp: state.xp + 100
+  })),
+  
+  setCurrentChapter: (chapter) => set({ currentChapter: chapter }),
+  
+  unlockSkill: (skill) => set((state) => ({
+    unlockedSkills: [...state.unlockedSkills, skill],
+    xp: state.xp + 30
+  })),
+  
+  setDialogue: (dialogue) => set({ currentDialogue: dialogue }),
+  
+  toggleMusic: () => set((state) => ({ musicEnabled: !state.musicEnabled })),
+  toggleSFX: () => set((state) => ({ sfxEnabled: !state.sfxEnabled })),
+  
+  // Reset for development
+  reset: () => set({
+    currentChapter: 'prologue',
+    completedChapters: [],
+    xp: 0,
+    unlockedSkills: [],
+    currentDialogue: null,
+    dialogueHistory: []
+  })
+}));
+
+export default useGameStore;
