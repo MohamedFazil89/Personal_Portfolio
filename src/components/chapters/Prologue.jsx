@@ -4,11 +4,16 @@ import { motion } from 'framer-motion';
 import useGameStore from '../../store/gameStore';
 import audioManager from '../../utils/audioManager';
 
+
 const Prologue = () => {
   const [phase, setPhase] = useState(0);
   const [loadingStep, setLoadingStep] = useState(0);
   const { setCurrentChapter, completeChapter } = useGameStore();
+  const [showDialogue, setShowDialogue] = useState(false);
 
+  // 
+ 
+// 
   useEffect(() => {
     // Initialize audio on component mount
     audioManager.init();
@@ -165,48 +170,67 @@ const Prologue = () => {
 
       {/* Phase 3: Dialogue Box */}
       {phase >= 3 && (
-        <motion.div
-          initial={{ opacity: 0, y: 100 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
+  <motion.div
+    initial={{ width: "0%", opacity:0 }}
+    animate={{ width: "80%", opacity:1 }}
+    transition={{ duration: 1.5, ease: "easeInOut" }}
+    onAnimationComplete={() => setShowDialogue(true)} // <--- important
+    style={{
+      position: "absolute",
+      bottom: "100px",
+      width: "80%",
+      height:"40%",
+      maxHeight:"400px",
+      maxWidth: "800px",
+      background: "rgba(10, 14, 39, 0.95)",
+      border: "2px solid var(--neon-blue)",
+      padding: "30px",
+      boxShadow: "0 0 30px rgba(0, 243, 255, 0.3)",
+      zIndex: 4,
+      overflow: "hidden",
+    }}
+  >
+    {showDialogue && (
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+      >
+        <p className="message" style={{
+  fontSize: "1.3rem",
+  marginBottom: "20px",
+  color: "var(--text-primary)",
+}}>
+  <span style={{ color: "var(--neon-blue)" }}>[Fazil]:</span>{" "}
+  Welcome, traveler. You've entered my domain — a world built from code,
+  creativity, and countless late nights.
+</p>
+
+        <p
           style={{
-            position: 'absolute',
-            bottom: '100px',
-            width: '80%',
-            maxWidth: '800px',
-            background: 'rgba(10, 14, 39, 0.95)',
-            border: '2px solid var(--neon-blue)',
-            padding: '30px',
-            boxShadow: '0 0 30px rgba(0, 243, 255, 0.3)',
-            zIndex: 4
+            fontSize: "1.1rem",
+            marginBottom: "30px",
+            color: "var(--text-secondary)",
           }}
         >
-          <p style={{ 
-            fontSize: '1.3rem', 
-            marginBottom: '20px',
-            color: 'var(--text-primary)'
-          }}>
-            <span style={{ color: 'var(--neon-blue)' }}>[Fazil]:</span> 
-            {' '}Welcome, traveler. You've entered my domain — a world built from code, creativity, and countless late nights.
-          </p>
-          
-          <p style={{ 
-            fontSize: '1.1rem', 
-            marginBottom: '30px',
-            color: 'var(--text-secondary)'
-          }}>
-            Ready to explore what I've built? Each chapter reveals a piece of the journey.
-          </p>
+          Ready to explore what I've built? Each chapter reveals a piece of the
+          journey.
+        </p>
 
-          <button 
-            className="neon-button"
-            onClick={handleStartJourney}
-            onMouseEnter={handleButtonHover}
-          >
-            Start Journey
-          </button>
-        </motion.div>
-      )}
+        <motion.button
+          className="neon-button"
+          onClick={handleStartJourney}
+          onMouseEnter={handleButtonHover}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3 }}
+        >
+          Start Journey
+        </motion.button>
+      </motion.div>
+    )}
+  </motion.div>
+)}
 
       {/* Ambient particle glow */}
       <div style={{

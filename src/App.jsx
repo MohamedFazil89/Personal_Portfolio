@@ -1,13 +1,12 @@
 // App.jsx
 import { useEffect } from 'react';
 import useGameStore from './store/gameStore';
-import audioManager from './utils/audioManager';
 import Prologue from './components/chapters/Prologue';
+import Origin from './components/chapters/Origin';
 import './styles/cyber.css';
 
 function App() {
   const currentChapter = useGameStore((state) => state.currentChapter);
-  const { musicEnabled, sfxEnabled } = useGameStore();
   
   useEffect(() => {
     // Import Google Fonts for cyber aesthetic
@@ -15,21 +14,7 @@ function App() {
     link.href = 'https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&family=Orbitron:wght@400;500;700;900&display=swap';
     link.rel = 'stylesheet';
     document.head.appendChild(link);
-
-    // Cleanup audio on unmount
-    return () => {
-      audioManager.cleanup();
-    };
   }, []);
-
-  // Sync audio manager with store state
-  useEffect(() => {
-    audioManager.toggleMusic(musicEnabled);
-  }, [musicEnabled]);
-
-  useEffect(() => {
-    audioManager.toggleSFX(sfxEnabled);
-  }, [sfxEnabled]);
 
   // Chapter router
   const renderChapter = () => {
@@ -37,10 +22,7 @@ function App() {
       case 'prologue':
         return <Prologue />;
       case 'origin':
-        return <div className="chapter-container">
-          <h1 className="neon-text">CHAPTER I: ORIGIN</h1>
-          <p style={{ color: 'var(--text-secondary)' }}>Coming soon...</p>
-        </div>;
+        return <Origin/>;
       case 'trials':
         return <div className="chapter-container">
           <h1 className="neon-text">CHAPTER II: TRIALS</h1>
@@ -53,7 +35,7 @@ function App() {
 
   return (
     <div className="App" style={{ position: 'relative', minHeight: '100vh' }}>
-      {/* Progress bar */}
+      {/* Progress bar (top of screen) */}
       <ProgressBar />
       
       {/* Audio controls */}
@@ -65,7 +47,7 @@ function App() {
   );
 }
 
-// Progress Bar Component
+// Simple Progress Bar Component
 const ProgressBar = () => {
   const { completedChapters, xp } = useGameStore();
   
@@ -82,19 +64,21 @@ const ProgressBar = () => {
       <div style={{
         height: '100%',
         width: `${(completedChapters.length / 5) * 100}%`,
-        background: 'linear-gradient(90deg, var(--neon-blue), var(--neon-purple))',
-        boxShadow: '0 0 20px var(--neon-blue)',
-        transition: 'width 0.5s ease'
+        background: 'linear-gradient(90deg, var(--neon-dark-red), var(--neon-primary), var(--neon-secondary))',
+        boxShadow: 'var(--glow-primary)',
+        transition: 'width 0.8s cubic-bezier(0.4, 0, 0.2, 1)'
       }} />
       
       <div style={{
         position: 'absolute',
         top: '10px',
         right: '20px',
-        color: 'var(--neon-blue)',
-        fontSize: '0.9rem',
+        color: 'var(--neon-primary)',
+        fontSize: '1rem',
         fontFamily: 'Orbitron',
-        textShadow: '0 0 10px var(--neon-blue)'
+        fontWeight: '600',
+        textShadow: 'var(--glow-subtle)',
+        letterSpacing: '1px'
       }}>
         XP: {xp}
       </div>
@@ -102,88 +86,50 @@ const ProgressBar = () => {
   );
 };
 
-// Enhanced Audio Controls
+// Simple Audio Controls
 const AudioControls = () => {
   const { musicEnabled, sfxEnabled, toggleMusic, toggleSFX } = useGameStore();
   
-  const handleMusicToggle = () => {
-    audioManager.playSFX('uiClick');
-    toggleMusic();
-  };
-
-  const handleSFXToggle = () => {
-    // Play sound before toggle so user hears it
-    if (sfxEnabled) {
-      audioManager.playSFX('uiClick');
-    }
-    toggleSFX();
-  };
-
-  const handleHover = () => {
-    audioManager.playSFX('uiHover');
-  };
-
   return (
     <div style={{
       position: 'fixed',
       bottom: '20px',
       right: '20px',
       display: 'flex',
-      flexDirection: 'row',
       gap: '10px',
       zIndex: 9999
     }}>
       <button 
-        onClick={handleMusicToggle}
-        onMouseEnter={handleHover}
+        onClick={toggleMusic}
         style={{
-          padding: '1px 5px',
-          background: musicEnabled ? 'var(--neon-blue)' : 'rgba(0, 243, 255, 0.1)',
-          border: '2px solid var(--neon-blue)',
-          color: musicEnabled ? 'var(--darker-bg)' : 'var(--neon-blue)',
+          padding: '12px 18px',
+          background: musicEnabled ? 'var(--neon-primary)' : 'rgba(255, 0, 68, 0.1)',
+          border: `2px solid ${musicEnabled ? 'var(--neon-secondary)' : 'var(--neon-dark-red)'}`,
+          color: musicEnabled ? 'var(--darker-bg)' : 'var(--neon-primary)',
           cursor: 'pointer',
           transition: 'all 0.3s',
-          fontSize: '.8rem',
-          boxShadow: musicEnabled ? '0 0 20px var(--neon-blue)' : 'none',
-          fontFamily: 'Orbitron',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '4px',
-
+          fontSize: '1.2rem',
+          boxShadow: musicEnabled ? 'var(--glow-subtle)' : 'none',
+          clipPath: 'polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px))'
         }}
-        title={musicEnabled ? 'Music: ON' : 'Music: OFF'}
       >
-        <span style={{ fontSize: '0.7rem'}}>🎵</span>
-        <span style={{ fontSize: '0.7rem' }}>
-          {musicEnabled ? 'ON' : 'OFF'}
-        </span>
+        🎵
       </button>
-      
       <button 
-        onClick={handleSFXToggle}
-        onMouseEnter={handleHover}
+        onClick={toggleSFX}
         style={{
-          padding: '1px 5px',
-          background: sfxEnabled ? 'var(--neon-blue)' : 'rgba(0, 243, 255, 0.1)',
-          border: '2px solid var(--neon-blue)',
-          color: sfxEnabled ? 'var(--darker-bg)' : 'var(--neon-blue)',
+          padding: '12px 18px',
+          background: sfxEnabled ? 'var(--neon-primary)' : 'rgba(255, 0, 68, 0.1)',
+          border: `2px solid ${sfxEnabled ? 'var(--neon-secondary)' : 'var(--neon-dark-red)'}`,
+          color: sfxEnabled ? 'var(--darker-bg)' : 'var(--neon-primary)',
           cursor: 'pointer',
           transition: 'all 0.3s',
-          fontSize: '1rem',
-          boxShadow: sfxEnabled ? '0 0 20px var(--neon-blue)' : 'none',
-          fontFamily: 'Orbitron',
-          display: 'flex',
-          flexDirection:"row",
-          alignItems: 'center',
-          gap: '4px',
-          borderRadius: '5px'
+          fontSize: '1.2rem',
+          boxShadow: sfxEnabled ? 'var(--glow-subtle)' : 'none',
+          clipPath: 'polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px))'
         }}
-        title={sfxEnabled ? 'SFX: ON' : 'SFX: OFF'}
       >
-        <span style={{ fontSize: '0.7rem'}}>🔊</span>
-        <span style={{ fontSize: '0.7rem' }}>
-          {sfxEnabled ? 'ON' : 'OFF'}
-        </span>
+        🔊
       </button>
     </div>
   );
