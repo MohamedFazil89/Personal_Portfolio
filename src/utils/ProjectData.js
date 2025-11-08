@@ -86,7 +86,7 @@ export const projectsData = [
     unlockDelay: 1600
   },
   {
-  id: 'project-2',
+  id: 'project-4',
   title: 'Custom PC Builder Store',
   category: 'E-Commerce',
   difficulty: 'HARD',
@@ -114,7 +114,7 @@ export const projectsData = [
   unlockDelay: 3200
 },
   {
-  id: 'project-1',
+  id: 'project-5',
   title: 'LocalLens – Emotional Travel Discovery',
   category: 'Mobile & Web App',
   difficulty: 'EPIC',
