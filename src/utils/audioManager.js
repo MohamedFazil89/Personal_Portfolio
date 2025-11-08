@@ -6,7 +6,7 @@ class AudioManager {
     this.music = {};
     this.sfx = {};
     this.currentMusic = null;
-    this.musicVolume = 0.9;
+    this.musicVolume = 0.5;
     this.sfxVolume = 0.7;
     this.isMusicEnabled = true;
     this.isSFXEnabled = true;
@@ -39,7 +39,7 @@ class AudioManager {
 
     // Origin - Emotional, nostalgic theme
     this.music.origin = new Howl({
-      src: ['/audio/origin-bgm.mp3'],
+      src: ['/audio/mystery-194918.mp3'],
       loop: true,
       volume: this.musicVolume,
       onload: () => {
@@ -188,6 +188,7 @@ class AudioManager {
       console.log('✅ All music tracks ready');
     }
   }
+  
 
   checkSFXLoaded() {
     const sfxCount = Object.keys(this.sfx).length;
@@ -197,6 +198,22 @@ class AudioManager {
       console.log('✅ All SFX ready');
     }
   }
+
+  // Alias method that maps common names to actual SFX
+play(sfxName) {
+  const soundMap = {
+    'click': 'uiClick',
+    'hover': 'uiHover',
+    'success': 'questComplete',
+    'powerUp': 'skillUnlock',
+    'type': 'dialogueAppear',
+    'glitch': 'error',
+    'transition': 'chapterTransition'
+  };
+  
+  const actualSound = soundMap[sfxName] || sfxName;
+  this.playSFX(actualSound);
+}
 
   // Play background music with smooth transition
   playMusic(chapterName, fadeIn = 2000) {

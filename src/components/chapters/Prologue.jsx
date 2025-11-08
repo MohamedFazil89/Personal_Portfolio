@@ -12,12 +12,12 @@ const Prologue = () => {
   const [showDialogue, setShowDialogue] = useState(false);
 
   // 
- 
-// 
+
+  // 
   useEffect(() => {
     // Initialize audio on component mount
     audioManager.init();
-    
+
     // Start prologue music with fade in
     setTimeout(() => {
       audioManager.playMusic('prologue', 3000);
@@ -61,10 +61,10 @@ const Prologue = () => {
   const handleStartJourney = () => {
     // Play transition sound
     audioManager.playSFX('questComplete');
-    
+
     // Complete chapter and move to next
     completeChapter('prologue');
-    
+
     // Transition to Origin chapter with music crossfade
     setTimeout(() => {
       audioManager.playMusic('origin', 2000);
@@ -80,7 +80,7 @@ const Prologue = () => {
     <div className="chapter-container" style={{ position: 'relative' }}>
       {/* Background Grid */}
       <div className="grid-bg" />
-      
+
       {/* Scanlines Effect */}
       <div className="scanlines" />
 
@@ -93,8 +93,8 @@ const Prologue = () => {
           transition={{ duration: 1 }}
           style={{ textAlign: 'center', zIndex: 2 }}
         >
-          <h1 
-            className="glitch neon-text" 
+          <h1
+            className="glitch neon-text"
             data-text="INITIALIZING..."
             style={{ fontSize: '4rem', marginBottom: '2rem' }}
           >
@@ -103,7 +103,7 @@ const Prologue = () => {
           <div style={{ fontSize: '1rem', minHeight: '0px' }}>
             {loadingStep === 1 && (
               <motion.p
-                initial={{ opacity: 0, x: -20, y:-30 }}
+                initial={{ opacity: 0, x: -20, y: -30 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 20 }}
                 transition={{ duration: 0.5 }}
@@ -114,7 +114,7 @@ const Prologue = () => {
             )}
             {loadingStep === 2 && (
               <motion.p
-                initial={{ opacity: 0, x: -20, y:-30 }}
+                initial={{ opacity: 0, x: -20, y: -30 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 20 }}
                 transition={{ duration: 0.5 }}
@@ -125,7 +125,7 @@ const Prologue = () => {
             )}
             {loadingStep === 3 && (
               <motion.p
-                initial={{ opacity: 0, x: -20, y:-30 }}
+                initial={{ opacity: 0, x: -20, y: -30 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.5 }}
                 style={{ color: 'var(--neon-primary)' }}
@@ -155,12 +155,12 @@ const Prologue = () => {
           }}
         >
           {/* Avatar Image */}
-          <img 
-            src="/assets/avatar.png" 
+          <img
+            src="/assets/avatar.png"
             alt="Fazil Avatar"
-            style={{ 
-              width: '100%', 
-              height: '100%', 
+            style={{
+              width: '100%',
+              height: '100%',
               objectFit: 'cover',
               animation: 'float 3s ease-in-out infinite'
             }}
@@ -170,67 +170,67 @@ const Prologue = () => {
 
       {/* Phase 3: Dialogue Box */}
       {phase >= 3 && (
-  <motion.div
-    initial={{ width: "0%", opacity:0 }}
-    animate={{ width: "80%", opacity:1 }}
-    transition={{ duration: 1.5, ease: "easeInOut" }}
-    onAnimationComplete={() => setShowDialogue(true)} // <--- important
-    style={{
-      position: "absolute",
-      bottom: "100px",
-      width: "80%",
-      height:"40%",
-      maxHeight:"400px",
-      maxWidth: "800px",
-      background: "rgba(10, 14, 39, 0.95)",
-      border: "2px solid var(--neon-blue)",
-      padding: "30px",
-      boxShadow: "0 0 30px rgba(0, 243, 255, 0.3)",
-      zIndex: 4,
-      overflow: "hidden",
-    }}
-  >
-    {showDialogue && (
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-      >
-        <p className="message" style={{
-  fontSize: "1.3rem",
-  marginBottom: "20px",
-  color: "var(--text-primary)",
-}}>
-  <span style={{ color: "var(--neon-blue)" }}>[Fazil]:</span>{" "}
-  Welcome, traveler. You've entered my domain — a world built from code,
-  creativity, and countless late nights.
-</p>
-
-        <p
+        <motion.div
+          initial={{ width: "0%", opacity: 0 }}
+          animate={{ width: "80%", opacity: 1 }}
+          transition={{ duration: 1.5, ease: "easeInOut" }}
+          onAnimationComplete={() => setShowDialogue(true)} // <--- important
           style={{
-            fontSize: "1.1rem",
-            marginBottom: "30px",
-            color: "var(--text-secondary)",
+            position: "absolute",
+            bottom: "100px",
+            width: "80%",
+            height: "40%",
+            maxHeight: "400px",
+            maxWidth: "800px",
+            background: "rgba(10, 14, 39, 0.95)",
+            border: "2px solid var(--neon-blue)",
+            padding: "30px",
+            boxShadow: "0 0 30px rgba(0, 243, 255, 0.3)",
+            zIndex: 4,
+            overflow: "hidden",
           }}
         >
-          Ready to explore what I've built? Each chapter reveals a piece of the
-          journey.
-        </p>
+          {showDialogue && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+            >
+              <p className="message" style={{
+                fontSize: "1.3rem",
+                marginBottom: "20px",
+                color: "var(--text-primary)",
+              }}>
+                <span style={{ color: "var(--neon-blue)" }}>[Fazil]:</span>{" "}
+                Welcome, traveler. You've entered my domain — a world built from code,
+                creativity, and countless late nights.
+              </p>
 
-        <motion.button
-          className="neon-button"
-          onClick={handleStartJourney}
-          onMouseEnter={handleButtonHover}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.3 }}
-        >
-          Start Journey
-        </motion.button>
-      </motion.div>
-    )}
-  </motion.div>
-)}
+              <p
+                style={{
+                  fontSize: "1.1rem",
+                  marginBottom: "30px",
+                  color: "var(--text-secondary)",
+                }}
+              >
+                Ready to explore what I've built? Each chapter reveals a piece of the
+                journey.
+              </p>
+
+              <motion.button
+                className="neon-button"
+                onClick={handleStartJourney}
+                onMouseEnter={handleButtonHover}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.3 }}
+              >
+                Start Journey
+              </motion.button>
+            </motion.div>
+          )}
+        </motion.div>
+      )}
 
       {/* Ambient particle glow */}
       <div style={{

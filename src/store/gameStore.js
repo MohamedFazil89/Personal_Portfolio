@@ -11,6 +11,8 @@ const useGameStore = create((set) => ({
   // Audio state
   musicEnabled: true,
   sfxEnabled: true,
+  musicVolume: 0.3,
+  sfxVolume: 0.5,
   
   // Dialogue state
   currentDialogue: null,

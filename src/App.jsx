@@ -1,13 +1,24 @@
 // App.jsx
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import useGameStore from './store/gameStore';
 import Prologue from './components/chapters/Prologue';
 import Origin from './components/chapters/Origin';
 import './styles/cyber.css';
+import ParticleField3D from './components/effects/ParticleField3D';
+import DataStreams from './components/effects/DataStreams';
+import FloatingHexagons from './components/effects/FloatingHexagons';
+import EffectsSettings from './components/ui/EffectsSettings';
+import Trails from "./components/chapters/Trials"
 
 function App() {
   const currentChapter = useGameStore((state) => state.currentChapter);
-  
+  const [effectsEnabled, setEffectsEnabled] = useState({
+    particles: true,
+    hexagons: true,
+    dataStreams: true,
+    grid: true
+  })
+
   useEffect(() => {
     // Import Google Fonts for cyber aesthetic
     const link = document.createElement('link');
@@ -22,12 +33,9 @@ function App() {
       case 'prologue':
         return <Prologue />;
       case 'origin':
-        return <Origin/>;
+        return <Origin />;
       case 'trials':
-        return <div className="chapter-container">
-          <h1 className="neon-text">CHAPTER II: TRIALS</h1>
-          <p style={{ color: 'var(--text-secondary)' }}>Coming soon...</p>
-        </div>;
+        return <Trails />;;
       default:
         return <Prologue />;
     }
@@ -35,12 +43,16 @@ function App() {
 
   return (
     <div className="App" style={{ position: 'relative', minHeight: '100vh' }}>
+      {/* 3D Background Effects - Layered */}
+      {/* <ParticleField3D /> */}
+      {/* <FloatingHexagons /> */}
+      <DataStreams />
       {/* Progress bar (top of screen) */}
       <ProgressBar />
-      
+
       {/* Audio controls */}
       <AudioControls />
-      
+
       {/* Current chapter */}
       {renderChapter()}
     </div>
@@ -50,7 +62,7 @@ function App() {
 // Simple Progress Bar Component
 const ProgressBar = () => {
   const { completedChapters, xp } = useGameStore();
-  
+
   return (
     <div style={{
       position: 'fixed',
@@ -68,7 +80,7 @@ const ProgressBar = () => {
         boxShadow: 'var(--glow-primary)',
         transition: 'width 0.8s cubic-bezier(0.4, 0, 0.2, 1)'
       }} />
-      
+
       <div style={{
         position: 'absolute',
         top: '10px',
@@ -89,7 +101,7 @@ const ProgressBar = () => {
 // Simple Audio Controls
 const AudioControls = () => {
   const { musicEnabled, sfxEnabled, toggleMusic, toggleSFX } = useGameStore();
-  
+
   return (
     <div style={{
       position: 'fixed',
@@ -99,7 +111,7 @@ const AudioControls = () => {
       gap: '10px',
       zIndex: 9999
     }}>
-      <button 
+      <button
         onClick={toggleMusic}
         style={{
           padding: '12px 18px',
@@ -115,7 +127,7 @@ const AudioControls = () => {
       >
         🎵
       </button>
-      <button 
+      <button
         onClick={toggleSFX}
         style={{
           padding: '12px 18px',
