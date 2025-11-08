@@ -86,73 +86,73 @@ export const projectsData = [
     unlockDelay: 1600
   },
   {
-    id: 'project-4',
-    title: 'Video Editing Platform',
-    category: 'Multimedia',
-    difficulty: 'RARE',
-    status: 'completed',
-    xpReward: 100,
-    thumbnail: '🎥',
-    description: 'A web-based video editor with timeline editing, effects library, and cloud rendering.',
-    challenge: 'Processing high-resolution video in browser without performance degradation.',
-    solution: 'Utilized WebAssembly for video processing, WebGL for previews, and cloud workers for rendering.',
-    technologies: ['WebAssembly', 'WebGL', 'FFmpeg.wasm', 'React', 'AWS Lambda'],
-    features: [
-      'Drag-and-drop timeline editor',
-      'Real-time preview',
-      'Effects and transitions library',
-      'Cloud rendering',
-      'Export in multiple formats'
-    ],
-    impact: {
-      metric: 'Users',
-      value: '5K+',
-      description: 'monthly active editors'
-    },
-    githubUrl: '#',
-    liveUrl: '#',
-    unlockDelay: 2400
+  id: 'project-2',
+  title: 'Custom PC Builder Store',
+  category: 'E-Commerce',
+  difficulty: 'HARD',
+  status: 'completed',
+  xpReward: 100,
+  thumbnail: '🖥️',
+  description: 'An e-commerce platform that lets users customize their own PC by selecting compatible components and placing orders instantly.',
+  challenge: 'Managing component compatibility, dynamic pricing, and real-time stock updates across thousands of products.',
+  solution: 'Developed a compatibility engine with live validation, integrated Stripe for payments, and automated inventory sync using webhooks.',
+  technologies: ['React', 'Node.js', 'Express', 'MongoDB', 'Stripe', 'Redis'],
+  features: [
+    'PC component compatibility checker',
+    'Real-time price and stock updates',
+    'Custom build preview',
+    'Secure payment gateway',
+    'Order tracking dashboard'
+  ],
+  impact: {
+    metric: 'Builds',
+    value: '10K+',
+    description: 'custom PCs configured by users'
   },
+  githubUrl: '#',
+  liveUrl: '#',
+  unlockDelay: 3200
+},
   {
-    id: 'project-5',
-    title: 'Real-Time Chat Application',
-    category: 'Web Development',
-    difficulty: 'RARE',
-    status: 'completed',
-    xpReward: 90,
-    thumbnail: '💬',
-    description: 'A real-time messaging platform with video calls, file sharing, and end-to-end encryption.',
-    challenge: 'Ensuring message delivery and maintaining connection stability across network changes.',
-    solution: 'Implemented WebSocket with automatic reconnection, message queuing, and WebRTC for video.',
-    technologies: ['Socket.io', 'WebRTC', 'Node.js', 'MongoDB', 'Redis'],
-    features: [
-      'Instant messaging',
-      'Video/audio calls',
-      'File sharing',
-      'End-to-end encryption',
-      'Typing indicators'
-    ],
-    impact: {
-      metric: 'Messages',
-      value: '1M+',
-      description: 'exchanged daily'
-    },
-    githubUrl: '#',
-    liveUrl: '#',
-    unlockDelay: 3200
+  id: 'project-1',
+  title: 'LocalLens – Emotional Travel Discovery',
+  category: 'Mobile & Web App',
+  difficulty: 'EPIC',
+  status: 'completed',
+  xpReward: 120,
+  thumbnail: '📍',
+  description: 'An emotion-driven travel journaling app that lets users share local stories through videos, audio pins, and multilingual captions.',
+  challenge: 'Building seamless real-time journey updates and emotion-based content suggestions across different regions and languages.',
+  solution: 'Integrated Supabase for data sync, AssemblyAI + Translate API for real-time transcription & translation, and emotion tagging using sentiment analysis.',
+  technologies: ['React Native', 'Supabase', 'Node.js', 'Firebase (legacy)', 'AssemblyAI', 'Google Translate API'],
+  features: [
+    'Emotion-based journey discovery',
+    'Audio & video pins with multilingual captions',
+    'Interactive map journeys',
+    'Gamified experience with XP & leaderboards',
+    'Offline caching & instant sync'
+  ],
+  impact: {
+    metric: 'Journeys',
+    value: '50K+',
+    description: 'shared by explorers worldwide'
   },
+  githubUrl: '#',
+  liveUrl: '#',
+  unlockDelay: 3200
+}
   {
     id: 'project-6',
-    title: 'Mobile Fitness Tracker',
-    category: 'Mobile Development',
+    title: 'AI Fitness Tracker',
+    category: 'Web Development',
     difficulty: 'RARE',
     status: 'completed',
     xpReward: 85,
     thumbnail: '💪',
-    description: 'A cross-platform mobile app for tracking workouts, nutrition, and health metrics.',
+    description: 'A Dynimic web app for tracking workouts, nutrition, and health metrics using AI posture dediction',
     challenge: 'Syncing data across devices while working offline and integrating with health APIs.',
-    solution: 'Built with React Native, implemented offline-first architecture with local database sync.',
-    technologies: ['React Native', 'SQLite', 'HealthKit', 'Google Fit', 'Firebase'],
+    solution: 'Built with ReactJS, implemented offline-first architecture with local database sync.',
+    technologies: ['ReactJS', 'FireBase', 'NODEJS', 'GoogleAPIs'],
     features: [
       'Workout logging',
       'Nutrition tracking',
@@ -161,13 +161,13 @@ export const projectsData = [
       'Wearable integration'
     ],
     impact: {
-      metric: 'Downloads',
-      value: '10K+',
-      description: 'across iOS and Android'
+      metric: 'IMPACT',
+      value: 'INCRESE IN ENGAGGIG WORKOUT',
+      description: 'across WEB & APP'
     },
     githubUrl: '#',
     liveUrl: '#',
-    unlockDelay: 4000
+    unlockDelay: 5000
   }
 ];
 
