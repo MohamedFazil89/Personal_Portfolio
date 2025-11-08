@@ -140,7 +140,7 @@ export const projectsData = [
   githubUrl: '#',
   liveUrl: '#',
   unlockDelay: 3200
-}
+},
   {
     id: 'project-6',
     title: 'AI Fitness Tracker',
