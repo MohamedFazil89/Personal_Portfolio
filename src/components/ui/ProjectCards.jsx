@@ -6,7 +6,7 @@ import audioManager from '../../utils/audioManager';
 
 const ProjectCard = ({ project, onSelect }) => {
   const [isHovered, setIsHovered] = useState(false);
-const diffConfig = difficultyConfig[project.difficulty];
+  const diffConfig = difficultyConfig[project.difficulty];
 
   const handleMouseEnter = () => {
     setIsHovered(true);
@@ -26,8 +26,8 @@ const diffConfig = difficultyConfig[project.difficulty];
     <motion.div
       initial={{ opacity: 0, y: 50, scale: 0.9 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ 
-        duration: 0.6, 
+      transition={{
+        duration: 0.6,
         delay: project.unlockDelay / 1000,
         ease: [0.4, 0, 0.2, 1]
       }}
@@ -212,36 +212,36 @@ const diffConfig = difficultyConfig[project.difficulty];
 
       {/* Click Prompt */}
       <motion.div
-  initial={{ opacity: 0 }}
-  animate={{ opacity: isHovered ? 1 : 0 }}
-  style={{
-    position: 'absolute',
-    bottom: '15px',
-    right: '15px',
-    display: 'flex',
-    gap: '8px'
-  }}
->
-  <button 
-    onClick={(e) => {
-      e.stopPropagation();
-      audioManager.play('click');
-      onSelect(project, 'demo'); // Pass 'demo' as second param
-    }}
-    style={{
-      fontSize: '0.8rem',
-      padding: '5px 10px',
-      background: diffConfig.color,
-      border: 'none',
-      borderRadius: '4px',
-      cursor: 'pointer',
-      color: '#000',
-      fontWeight: '600'
-    }}
-  >
-    NetShell Demo
-  </button>
-</motion.div>
+        initial={{ opacity: 0 }}
+        animate={{ opacity: isHovered ? 1 : 0 }}
+        style={{
+          position: 'absolute',
+          bottom: '15px',
+          right: '15px',
+          display: 'flex',
+          gap: '8px'
+        }}
+      >
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            audioManager.play('click');
+            onSelect(project, 'demo'); // Pass 'demo' as second param
+          }}
+          style={{
+            fontSize: '0.8rem',
+            padding: '5px 10px',
+            background: diffConfig.color,
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer',
+            color: '#000',
+            fontWeight: '600'
+          }}
+        >
+          NetShell Demo
+        </button>
+      </motion.div>
 
     </motion.div>
   );

@@ -5,10 +5,14 @@ import { difficultyConfig } from '../../utils/ProjectData';
 import audioManager from '../../utils/audioManager';
 import useGameStore from '../../store/gameStore';
 
+
+const DEFAULT_DIFF = { color: '#ccc', glow: 'none' }; // fallback
+
+
 const ProjectModal = ({ project, onClose, initialTab = 'overview' }) => {  // Add initialTab
 
   const { unlockSkill } = useGameStore();
-  const diffConfig = difficultyConfig[project.difficulty];
+  const diffConfig = difficultyConfig[project.difficulty] || DEFAULT_DIFF;
   const [activeTab, setActiveTab] = useState(initialTab);
 
 
@@ -158,16 +162,16 @@ const ProjectModal = ({ project, onClose, initialTab = 'overview' }) => {  // Ad
             borderBottom: '2px solid rgba(0, 243, 255, 0.2)',
             paddingBottom: '10px'
           }}>
-            <TabButton 
-              label="Overview" 
+            <TabButton
+              label="Overview"
               active={activeTab === 'overview'}
               onClick={() => {
                 setActiveTab('overview');
                 audioManager.play('click');
               }}
             />
-            <TabButton 
-              label="NetShell Demo" 
+            <TabButton
+              label="NetShell Demo"
               active={activeTab === 'demo'}
               onClick={() => {
                 setActiveTab('demo');
@@ -526,7 +530,7 @@ ${project.solution}`
 
   const handleCommand = (cmd) => {
     const trimmedCmd = cmd.trim().toLowerCase();
-    
+
     setTerminalOutput(prev => [
       ...prev,
       { type: 'user', text: `$ ${cmd}` }
@@ -626,13 +630,13 @@ ${project.solution}`
             transition={{ duration: 0.2 }}
             style={{
               marginBottom: '8px',
-              color: 
+              color:
                 line.type === 'user' ? '#fff' :
-                line.type === 'error' ? '#ff006e' :
-                line.type === 'success' ? '#00ff88' :
-                line.type === 'warning' ? '#ffbe0b' :
-                line.type === 'system' ? '#ff8800' :
-                diffConfig.color,
+                  line.type === 'error' ? '#ff006e' :
+                    line.type === 'success' ? '#00ff88' :
+                      line.type === 'warning' ? '#ffbe0b' :
+                        line.type === 'system' ? '#ff8800' :
+                          diffConfig.color,
               whiteSpace: 'pre-wrap',
               fontSize: '0.95rem',
               lineHeight: '1.6'
@@ -676,7 +680,7 @@ ${project.solution}`
         fontSize: '0.85rem',
         color: 'var(--text-secondary)'
       }}>
-        💡 Quick commands: 
+        💡 Quick commands:
         <span style={{ color: diffConfig.color, marginLeft: '10px', cursor: 'pointer' }} onClick={() => handleCommand('demo')}>demo</span>
         <span style={{ color: diffConfig.color, marginLeft: '10px', cursor: 'pointer' }} onClick={() => handleCommand('features')}>features</span>
         <span style={{ color: diffConfig.color, marginLeft: '10px', cursor: 'pointer' }} onClick={() => handleCommand('tech')}>tech</span>

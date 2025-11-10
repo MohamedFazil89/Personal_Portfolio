@@ -9,6 +9,7 @@ import DataStreams from './components/effects/DataStreams';
 import FloatingHexagons from './components/effects/FloatingHexagons';
 import EffectsSettings from './components/ui/EffectsSettings';
 import Trails from "./components/chapters/Trials"
+import Vision from "./components/chapters/Vision"
 
 function App() {
   const currentChapter = useGameStore((state) => state.currentChapter);
@@ -35,7 +36,9 @@ function App() {
       case 'origin':
         return <Origin />;
       case 'trials':
-        return <Trails />;;
+        return <Trails />;
+      case 'vision':
+        return <Vision/>
       default:
         return <Prologue />;
     }

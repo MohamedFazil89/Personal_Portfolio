@@ -6,7 +6,7 @@ class AudioManager {
     this.music = {};
     this.sfx = {};
     this.currentMusic = null;
-    this.musicVolume = 0.5;
+    this.musicVolume = 0.3;
     this.sfxVolume = 0.7;
     this.isMusicEnabled = true;
     this.isSFXEnabled = true;
