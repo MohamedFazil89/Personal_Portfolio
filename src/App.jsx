@@ -1,4 +1,4 @@
-// App.jsx
+// App.jsx - FULLY RESPONSIVE VERSION
 import { useEffect, useState } from 'react';
 import useGameStore from './store/gameStore';
 import Prologue from './components/chapters/Prologue';
@@ -7,22 +7,23 @@ import './styles/cyber.css';
 import ParticleField3D from './components/effects/ParticleField3D';
 import DataStreams from './components/effects/DataStreams';
 import FloatingHexagons from './components/effects/FloatingHexagons';
-import EffectsSettings from './components/ui/EffectsSettings';
-import Trails from "./components/chapters/Trials"
+import Trials from "./components/chapters/Trials"
 import Vision from "./components/chapters/Vision"
 import Connection from './components/chapters/Connection';
 import ChapterNav from './components/ui/ChapterNav';
-import SecretScanner from './components/game/SecretScanner';
 import PixelPet from './components/game/PixelPet';
+import { useResponsive } from './utils/responsiveUtils';
 
 function App() {
   const currentChapter = useGameStore((state) => state.currentChapter);
+  const { isMobile, isTablet, isSmallMobile } = useResponsive();
+  
   const [effectsEnabled, setEffectsEnabled] = useState({
-    particles: true,
-    hexagons: true,
+    particles: !isMobile, // Disable on mobile by default
+    hexagons: !isMobile,
     dataStreams: true,
     grid: true
-  })
+  });
 
   useEffect(() => {
     // Import Google Fonts for cyber aesthetic
@@ -32,6 +33,15 @@ function App() {
     document.head.appendChild(link);
   }, []);
 
+  // Update effects when screen size changes
+  useEffect(() => {
+    setEffectsEnabled(prev => ({
+      ...prev,
+      particles: !isMobile && prev.particles,
+      hexagons: !isMobile && prev.hexagons
+    }));
+  }, [isMobile]);
+
   // Chapter router
   const renderChapter = () => {
     switch (currentChapter) {
@@ -40,7 +50,7 @@ function App() {
       case 'origin':
         return <Origin />;
       case 'trials':
-        return <Trails />;
+        return <Trials />;
       case 'vision':
         return <Vision />
       case 'connection':
@@ -52,23 +62,24 @@ function App() {
 
   return (
     <div className="App" style={{ position: 'relative', minHeight: '100vh' }}>
-      {/* 3D Background Effects - Layered */}
-      {/* <ParticleField3D /> */}
-      {/* <FloatingHexagons /> */}
-      <DataStreams />
+      {/* 3D Background Effects - Only on desktop for performance */}
+      {effectsEnabled.particles && !isMobile && <ParticleField3D />}
+      {effectsEnabled.hexagons && !isMobile && <FloatingHexagons />}
+      
+      {/* Data streams work on all devices */}
+      {effectsEnabled.dataStreams && <DataStreams />}
+      
       {/* Progress bar (top of screen) */}
       <ProgressBar />
 
-      {/* Audio controls */}
-      <AudioControls />
+      {/* Audio controls - Desktop only, mobile uses ChapterNav */}
+      {!isMobile && <AudioControls />}
 
       {/* Chapter Navigation */}
       <ChapterNav />
-      {/* Secret Scanner */}
-      {/* <SecretScanner/> */}
 
-      {/* Pet */}
-      <PixelPet/>
+      {/* Pet - Scales based on device */}
+      <PixelPet />
 
       {/* Current chapter */}
       {renderChapter()}
@@ -76,12 +87,11 @@ function App() {
   );
 }
 
-// Simple Progress Bar Component
+// Responsive Progress Bar Component
 const ProgressBar = () => {
   const { completedChapters, xp } = useGameStore();
-  const uniqueChapters = Array.from(new Set(completedChapters)); // deduplication
-  console.log(uniqueChapters)
-
+  const { isMobile, isSmallMobile } = useResponsive();
+  const uniqueChapters = Array.from(new Set(completedChapters));
 
   return (
     <div style={{
@@ -89,13 +99,13 @@ const ProgressBar = () => {
       top: 0,
       left: 0,
       width: '100%',
-      height: '5px',
+      height: isMobile ? '3px' : '5px',
       background: 'rgba(0, 243, 255, 0.1)',
       zIndex: 9999
     }}>
       <div style={{
         height: '100%',
-        width: `${(uniqueChapters.length / 5) * 100}%`, // only unique counts
+        width: `${(uniqueChapters.length / 5) * 100}%`,
         background: 'linear-gradient(90deg, var(--neon-dark-red), var(--neon-primary), var(--neon-secondary))',
         boxShadow: 'var(--glow-primary)',
         transition: 'width 0.8s cubic-bezier(0.4, 0, 0.2, 1)'
@@ -103,22 +113,23 @@ const ProgressBar = () => {
 
       <div style={{
         position: 'absolute',
-        top: '10px',
-        right: '20px',
+        top: isMobile ? '6px' : '10px',
+        right: isMobile ? '10px' : '20px',
         color: 'var(--neon-primary)',
-        fontSize: '1rem',
+        fontSize: isMobile ? '0.85rem' : '1rem',
         fontFamily: 'Orbitron',
         fontWeight: '600',
         textShadow: 'var(--glow-subtle)',
-        letterSpacing: '1px'
+        letterSpacing: '1px',
+        pointerEvents: 'none'
       }}>
-        XP: {xp}
+        {!isSmallMobile && 'XP: '}{xp}
       </div>
     </div>
   );
 };
 
-// Simple Audio Controls
+// Desktop-only Audio Controls
 const AudioControls = () => {
   const { musicEnabled, sfxEnabled, toggleMusic, toggleSFX } = useGameStore();
 

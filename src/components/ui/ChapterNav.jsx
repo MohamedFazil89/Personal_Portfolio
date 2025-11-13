@@ -1,14 +1,16 @@
+// src/components/ui/ChapterNav.jsx - RESPONSIVE VERSION
 import { motion, AnimatePresence } from "framer-motion";
 import React, { useState, useEffect } from "react";
 import useGameStore from "../../store/gameStore";
 import audioManager from '../../utils/audioManager';
+import { useResponsive } from '../../utils/responsiveUtils';
 
 export default function ChapterNav() {
     const [isOpen, setIsOpen] = useState(false);
-    const [activeTab, setActiveTab] = useState('chapters'); // 'chapters', 'shortcuts', 'effects'
+    const [activeTab, setActiveTab] = useState('chapters');
     const { currentChapter, setCurrentChapter, musicEnabled, sfxEnabled, toggleMusic, toggleSFX } = useGameStore();
-    
-    // Effect states
+    const { isMobile, isSmallMobile } = useResponsive();
+
     const [effectsState, setEffectsState] = useState({
         dataStreams: true,
         grid: true,
@@ -25,7 +27,6 @@ export default function ChapterNav() {
     ];
     const chapterLabelKeys = ["I", "II", "III", "IV"];
 
-        // Navigate to chapter
     const handleSetChapter = (romanKey) => {
         const value = chapterLabels.find(obj => obj[romanKey])?.[romanKey];
         setIsOpen(false);
@@ -36,11 +37,9 @@ export default function ChapterNav() {
         }, 800);
     };
 
-    // Toggle visual effects
     const toggleEffect = (effectName) => {
         setEffectsState(prev => ({ ...prev, [effectName]: !prev[effectName] }));
-        
-        // Apply effect to DOM
+
         const effectElements = {
             dataStreams: document.querySelector('.data-streams'),
             grid: document.querySelector('.grid-bg'),
@@ -53,52 +52,43 @@ export default function ChapterNav() {
             element.style.opacity = effectsState[effectName] ? '0' : '1';
             element.style.pointerEvents = effectsState[effectName] ? 'none' : 'auto';
         }
-        
+
         audioManager.playSFX('click');
     };
 
-    // Handle shortcut clicks
     const handleShortcutClick = (handler) => {
         handler();
         audioManager.playSFX('click');
         setIsOpen(false);
     };
 
-    // Scroll functions
     const scrollDown = () => window.scrollBy({ top: 500, behavior: 'smooth' });
     const scrollUp = () => window.scrollBy({ top: -500, behavior: 'smooth' });
     const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
     const scrollToBottom = () => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
 
-
-        // Keyboard shortcuts
     useEffect(() => {
         const handleKeyPress = (e) => {
-            // Don't trigger if typing in input/textarea
             if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
 
             const key = e.key.toUpperCase();
-            
-            // Toggle Menu (M key)
+
             if (key === 'M' && !e.ctrlKey) {
                 setIsOpen(prev => !prev);
                 audioManager.playSFX('click');
                 return;
             }
 
-            // Close menu (Escape)
             if (e.key === 'Escape') {
                 setIsOpen(false);
                 return;
             }
 
-            // Effect toggles
             if (key === 'W') toggleEffect('dataStreams');
             if (key === 'G') toggleEffect('grid');
             if (key === 'S') toggleEffect('scanlines');
             if (key === 'X') toggleEffect('particles');
-            
-            // Quick navigation
+
             if (key === 'P') {
                 setCurrentChapter('trials');
                 audioManager.playSFX('click');
@@ -112,13 +102,11 @@ export default function ChapterNav() {
                 audioManager.playSFX('click');
             }
 
-            // Number keys for chapters
             if (key === '1') setCurrentChapter('origin');
             if (key === '2') setCurrentChapter('trials');
             if (key === '3') setCurrentChapter('vision');
             if (key === '4') setCurrentChapter('connection');
-            
-            // Scroll shortcuts (with Ctrl/Cmd)
+
             if (e.key === 'ArrowDown' && (e.ctrlKey || e.metaKey)) {
                 e.preventDefault();
                 scrollDown();
@@ -128,7 +116,6 @@ export default function ChapterNav() {
                 scrollUp();
             }
 
-            // Audio toggles
             if (key === 'N') {
                 toggleMusic();
                 audioManager.playSFX('click');
@@ -142,7 +129,6 @@ export default function ChapterNav() {
         return () => window.removeEventListener('keydown', handleKeyPress);
     }, [effectsState, currentChapter]);
 
-        // Shortcuts data
     const shortcuts = [
         { key: "↓", desc: "Scroll Down", action: scrollDown, hint: "Ctrl+↓" },
         { key: "↑", desc: "Scroll Up", action: scrollUp, hint: "Ctrl+↑" },
@@ -154,7 +140,6 @@ export default function ChapterNav() {
         { key: "M", desc: "Toggle Menu", action: () => setIsOpen(!isOpen), hint: "M" },
     ];
 
-    // Effect toggles data
     const effectToggles = [
         { key: "W", name: "Data Streams", state: effectsState.dataStreams, toggle: () => toggleEffect('dataStreams'), icon: "💧" },
         { key: "G", name: "Grid Background", state: effectsState.grid, toggle: () => toggleEffect('grid'), icon: "⚡" },
@@ -162,12 +147,11 @@ export default function ChapterNav() {
         { key: "X", name: "Particles", state: effectsState.particles, toggle: () => toggleEffect('particles'), icon: "✨" },
     ];
 
-    // Audio controls data
     const audioControls = [
         { key: "N", name: "Background Music", state: musicEnabled, toggle: toggleMusic, icon: "🎵" },
         { key: "B", name: "Sound Effects", state: sfxEnabled, toggle: toggleSFX, icon: "🔊" },
     ];
-    // Animation variants
+
     const menuVariants = {
         hidden: { height: "0px", opacity: 0, y: -20 },
         visible: { height: "auto", opacity: 1, y: 0, transition: { duration: 0.3, ease: "easeOut" } }
@@ -178,15 +162,14 @@ export default function ChapterNav() {
         visible: { opacity: 1, x: 0, transition: { duration: 0.2 } }
     };
 
-    // Tab button style
     const tabButtonStyle = (isActive) => ({
-        padding: "10px 18px",
+        padding: isMobile ? "8px 12px" : "10px 18px",
         background: isActive ? "var(--neon-primary)" : "transparent",
         color: isActive ? "var(--darker-bg)" : "var(--neon-blue)",
         border: `1px solid ${isActive ? 'var(--neon-primary)' : 'rgba(0, 243, 255, 0.3)'}`,
         cursor: "pointer",
         fontFamily: "Orbitron, sans-serif",
-        fontSize: "0.75rem",
+        fontSize: isMobile ? "0.65rem" : "0.75rem",
         fontWeight: 600,
         letterSpacing: "0.5px",
         transition: "all 0.2s",
@@ -194,9 +177,12 @@ export default function ChapterNav() {
         textTransform: "uppercase",
         boxShadow: isActive ? "0 0 10px var(--neon-primary)" : "none"
     });
+
     return (
         <>
             {/* Menu Button */}
+            {/* // Add to ChapterNav or top bar */}
+            
             <motion.button
                 onClick={() => {
                     setIsOpen(!isOpen);
@@ -206,33 +192,36 @@ export default function ChapterNav() {
                 whileTap={{ scale: 0.95 }}
                 style={{
                     position: "fixed",
-                    top: "24px",
-                    left: "26px",
+                    top: isMobile ? "16px" : "24px",
+                    left: isMobile ? "16px" : "26px",
                     zIndex: 100,
-                    padding: "10px 20px",
+                    padding: isMobile ? "8px 16px" : "10px 20px",
                     background: isOpen ? "var(--neon-secondary)" : "var(--neon-primary)",
                     color: "var(--darker-bg)",
                     border: "none",
                     fontFamily: "Orbitron, sans-serif",
                     fontWeight: 700,
                     letterSpacing: "1.5px",
-                    fontSize: "0.9rem",
+                    fontSize: isMobile ? "0.75rem" : "0.9rem",
                     boxShadow: `0 0 ${isOpen ? '20px' : '12px'} var(--neon-primary)`,
                     transition: "all 0.3s",
                     cursor: "pointer",
                     clipPath: "polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px))"
                 }}
             >
-                {isOpen ? '✕ CLOSE' : '⚡ COMMAND'} 
-                <span style={{ 
-                    fontSize: "0.65rem", 
-                    opacity: 0.8, 
-                    marginLeft: "6px",
-                    fontWeight: 400
-                }}>
-                    (M)
-                </span>
+                {isOpen ? '✕' : '⚡'} {!isSmallMobile && (isOpen ? 'CLOSE' : 'MENU')}
+                {!isMobile && (
+                    <span style={{
+                        fontSize: "0.65rem",
+                        opacity: 0.8,
+                        marginLeft: "6px",
+                        fontWeight: 400
+                    }}>
+                        (M)
+                    </span>
+                )}
             </motion.button>
+
             {/* Enhanced Command Center Menu */}
             <AnimatePresence>
                 {isOpen && (
@@ -243,14 +232,15 @@ export default function ChapterNav() {
                         variants={menuVariants}
                         style={{
                             position: "fixed",
-                            top: "80px",
-                            left: "24px",
+                            top: isMobile ? "60px" : "80px",
+                            left: isMobile ? "10px" : "24px",
+                            right: isMobile ? "10px" : "auto",
                             background: "rgba(6, 17, 28, 0.98)",
                             border: "2px solid var(--neon-blue)",
-                            padding: "18px",
+                            padding: isMobile ? "14px" : "18px",
                             margin: 0,
-                            width: "340px",
-                            maxHeight: "calc(100vh - 110px)",
+                            width: isMobile ? "auto" : "340px",
+                            maxHeight: isMobile ? "calc(100vh - 80px)" : "calc(100vh - 110px)",
                             overflowY: "auto",
                             boxShadow: "0 0 40px rgba(0, 243, 255, 0.5), inset 0 0 20px rgba(0, 243, 255, 0.1)",
                             zIndex: 99,
@@ -258,15 +248,16 @@ export default function ChapterNav() {
                             backdropFilter: "blur(10px)"
                         }}
                     >
+                        
                         {/* Header */}
                         <div style={{
-                            marginBottom: "16px",
-                            paddingBottom: "12px",
+                            marginBottom: "14px",
+                            paddingBottom: "10px",
                             borderBottom: "1px solid rgba(0, 243, 255, 0.3)"
                         }}>
                             <h2 style={{
                                 color: "var(--neon-primary)",
-                                fontSize: "1.1rem",
+                                fontSize: isMobile ? "0.95rem" : "1.1rem",
                                 fontFamily: "Orbitron",
                                 fontWeight: 700,
                                 margin: 0,
@@ -278,7 +269,7 @@ export default function ChapterNav() {
                             </h2>
                             <p style={{
                                 color: "var(--text-secondary)",
-                                fontSize: "0.75rem",
+                                fontSize: isMobile ? "0.7rem" : "0.75rem",
                                 margin: "4px 0 0 0",
                                 fontFamily: "Rajdhani"
                             }}>
@@ -287,37 +278,39 @@ export default function ChapterNav() {
                         </div>
 
                         {/* Tab Navigation */}
-                        <div style={{ 
-                            display: "flex", 
-                            gap: "8px", 
-                            marginBottom: "18px" 
+                        <div style={{
+                            display: "flex",
+                            gap: isMobile ? "6px" : "8px",
+                            marginBottom: "16px",
+                            flexWrap: isMobile ? "wrap" : "nowrap"
                         }}>
-                            <button 
+                            <button
                                 onClick={() => setActiveTab('chapters')}
                                 style={tabButtonStyle(activeTab === 'chapters')}
                             >
-                                📖 Chapters
+                                📖 {!isSmallMobile && 'Chapters'}
                             </button>
-                            <button 
+                            <button
                                 onClick={() => setActiveTab('shortcuts')}
                                 style={tabButtonStyle(activeTab === 'shortcuts')}
                             >
-                                ⌨️ Shortcuts
+                                ⌨️ {!isSmallMobile && 'Keys'}
                             </button>
-                            <button 
+                            <button
                                 onClick={() => setActiveTab('effects')}
                                 style={tabButtonStyle(activeTab === 'effects')}
                             >
-                                🎨 Effects
+                                🎨 {!isSmallMobile && 'Effects'}
                             </button>
                         </div>
+
                         {/* Chapters Tab */}
                         {activeTab === 'chapters' && (
                             <motion.div variants={contentVariants} initial="hidden" animate="visible">
                                 <h3 style={{
                                     color: "var(--neon-primary)",
-                                    fontSize: "0.85rem",
-                                    marginBottom: "14px",
+                                    fontSize: isMobile ? "0.75rem" : "0.85rem",
+                                    marginBottom: "12px",
                                     fontFamily: "Orbitron",
                                     textTransform: "uppercase",
                                     letterSpacing: "1px",
@@ -329,7 +322,7 @@ export default function ChapterNav() {
                                     {chapterLabelKeys.map(label => {
                                         const chapterValue = chapterLabels.find(obj => obj[label])[label];
                                         const isActive = currentChapter === chapterValue;
-                                        
+
                                         return (
                                             <motion.li
                                                 key={label}
@@ -338,17 +331,17 @@ export default function ChapterNav() {
                                                 whileTap={{ scale: 0.98 }}
                                                 style={{
                                                     cursor: "pointer",
-                                                    padding: "14px 16px",
+                                                    padding: isMobile ? "12px 14px" : "14px 16px",
                                                     marginBottom: "8px",
-                                                    background: isActive 
-                                                        ? "linear-gradient(90deg, rgba(0, 243, 255, 0.2) 0%, rgba(0, 243, 255, 0.05) 100%)" 
+                                                    background: isActive
+                                                        ? "linear-gradient(90deg, rgba(0, 243, 255, 0.2) 0%, rgba(0, 243, 255, 0.05) 100%)"
                                                         : "rgba(0, 243, 255, 0.05)",
-                                                    border: `1px solid ${isActive 
-                                                        ? 'var(--neon-primary)' 
+                                                    border: `1px solid ${isActive
+                                                        ? 'var(--neon-primary)'
                                                         : 'rgba(0, 243, 255, 0.2)'}`,
                                                     color: isActive ? "var(--neon-primary)" : "var(--neon-blue)",
                                                     fontFamily: "Rajdhani, sans-serif",
-                                                    fontSize: "0.95rem",
+                                                    fontSize: isMobile ? "0.85rem" : "0.95rem",
                                                     fontWeight: 600,
                                                     transition: "all 0.2s",
                                                     display: "flex",
@@ -359,24 +352,24 @@ export default function ChapterNav() {
                                                 }}
                                             >
                                                 <span>
-                                                    <span style={{ 
-                                                        fontFamily: "Orbitron", 
+                                                    <span style={{
+                                                        fontFamily: "Orbitron",
                                                         marginRight: "12px",
                                                         color: "var(--neon-primary)",
                                                         fontWeight: 700,
-                                                        fontSize: "1rem"
+                                                        fontSize: isMobile ? "0.9rem" : "1rem"
                                                     }}>
                                                         {label}
                                                     </span>
                                                     {chapterValue.toUpperCase()}
                                                 </span>
                                                 {isActive && (
-                                                    <motion.span 
+                                                    <motion.span
                                                         initial={{ scale: 0 }}
                                                         animate={{ scale: 1 }}
-                                                        style={{ 
-                                                            color: "var(--neon-primary)", 
-                                                            fontSize: "1rem",
+                                                        style={{
+                                                            color: "var(--neon-primary)",
+                                                            fontSize: isMobile ? "0.9rem" : "1rem",
                                                             textShadow: "0 0 8px var(--neon-primary)"
                                                         }}
                                                     >
@@ -389,13 +382,14 @@ export default function ChapterNav() {
                                 </ul>
                             </motion.div>
                         )}
+
                         {/* Shortcuts Tab */}
                         {activeTab === 'shortcuts' && (
                             <motion.div variants={contentVariants} initial="hidden" animate="visible">
                                 <h3 style={{
                                     color: "var(--neon-primary)",
-                                    fontSize: "0.85rem",
-                                    marginBottom: "14px",
+                                    fontSize: isMobile ? "0.75rem" : "0.85rem",
+                                    marginBottom: "12px",
                                     fontFamily: "Orbitron",
                                     textTransform: "uppercase",
                                     letterSpacing: "1px",
@@ -408,21 +402,21 @@ export default function ChapterNav() {
                                         <motion.li
                                             key={idx}
                                             onClick={() => handleShortcutClick(shortcut.action)}
-                                            whileHover={{ 
-                                                x: 6, 
+                                            whileHover={{
+                                                x: 6,
                                                 backgroundColor: "rgba(0, 243, 255, 0.15)",
                                                 borderColor: "var(--neon-blue)"
                                             }}
                                             whileTap={{ scale: 0.98 }}
                                             style={{
                                                 cursor: "pointer",
-                                                padding: "12px 16px",
+                                                padding: isMobile ? "10px 14px" : "12px 16px",
                                                 marginBottom: "8px",
                                                 background: "rgba(0, 243, 255, 0.05)",
                                                 border: "1px solid rgba(0, 243, 255, 0.2)",
                                                 color: "var(--text-primary)",
                                                 fontFamily: "Rajdhani, sans-serif",
-                                                fontSize: "0.9rem",
+                                                fontSize: isMobile ? "0.8rem" : "0.9rem",
                                                 transition: "all 0.2s",
                                                 display: "flex",
                                                 justifyContent: "space-between",
@@ -435,57 +429,60 @@ export default function ChapterNav() {
                                             </span>
                                             <span style={{
                                                 background: "rgba(0, 243, 255, 0.2)",
-                                                padding: "4px 12px",
+                                                padding: isMobile ? "3px 10px" : "4px 12px",
                                                 borderRadius: "4px",
                                                 fontFamily: "Orbitron",
-                                                fontSize: "0.75rem",
+                                                fontSize: isMobile ? "0.65rem" : "0.75rem",
                                                 color: "var(--neon-primary)",
                                                 fontWeight: 700,
                                                 border: "1px solid rgba(0, 243, 255, 0.4)",
-                                                textShadow: "0 0 5px var(--neon-primary)"
+                                                textShadow: "0 0 5px var(--neon-primary)",
+                                                whiteSpace: "nowrap"
                                             }}>
                                                 {shortcut.hint}
                                             </span>
                                         </motion.li>
                                     ))}
                                 </ul>
-                                
-                                {/* Quick Navigation Section */}
-                                <div style={{ marginTop: "20px", paddingTop: "16px", borderTop: "1px solid rgba(0, 243, 255, 0.2)" }}>
-                                    <h4 style={{
-                                        color: "var(--neon-secondary)",
-                                        fontSize: "0.8rem",
-                                        marginBottom: "10px",
-                                        fontFamily: "Orbitron",
-                                        textTransform: "uppercase",
-                                        letterSpacing: "1px",
-                                        fontWeight: 600
-                                    }}>
-                                        Quick Numbers
-                                    </h4>
-                                    <div style={{
-                                        display: "grid",
-                                        gridTemplateColumns: "1fr 1fr",
-                                        gap: "8px",
-                                        fontSize: "0.85rem",
-                                        color: "var(--text-secondary)",
-                                        fontFamily: "Rajdhani"
-                                    }}>
-                                        <div><kbd style={kbdStyle}>1</kbd> Origin</div>
-                                        <div><kbd style={kbdStyle}>2</kbd> Trials</div>
-                                        <div><kbd style={kbdStyle}>3</kbd> Vision</div>
-                                        <div><kbd style={kbdStyle}>4</kbd> Connection</div>
+
+                                {!isMobile && (
+                                    <div style={{ marginTop: "18px", paddingTop: "14px", borderTop: "1px solid rgba(0, 243, 255, 0.2)" }}>
+                                        <h4 style={{
+                                            color: "var(--neon-secondary)",
+                                            fontSize: "0.75rem",
+                                            marginBottom: "10px",
+                                            fontFamily: "Orbitron",
+                                            textTransform: "uppercase",
+                                            letterSpacing: "1px",
+                                            fontWeight: 600
+                                        }}>
+                                            Quick Numbers
+                                        </h4>
+                                        <div style={{
+                                            display: "grid",
+                                            gridTemplateColumns: "1fr 1fr",
+                                            gap: "8px",
+                                            fontSize: "0.8rem",
+                                            color: "var(--text-secondary)",
+                                            fontFamily: "Rajdhani"
+                                        }}>
+                                            <div><kbd style={kbdStyle}>1</kbd> Origin</div>
+                                            <div><kbd style={kbdStyle}>2</kbd> Trials</div>
+                                            <div><kbd style={kbdStyle}>3</kbd> Vision</div>
+                                            <div><kbd style={kbdStyle}>4</kbd> Connection</div>
+                                        </div>
                                     </div>
-                                </div>
+                                )}
                             </motion.div>
                         )}
+
                         {/* Effects Tab */}
                         {activeTab === 'effects' && (
                             <motion.div variants={contentVariants} initial="hidden" animate="visible">
                                 <h3 style={{
                                     color: "var(--neon-primary)",
-                                    fontSize: "0.85rem",
-                                    marginBottom: "14px",
+                                    fontSize: isMobile ? "0.75rem" : "0.85rem",
+                                    marginBottom: "12px",
                                     fontFamily: "Orbitron",
                                     textTransform: "uppercase",
                                     letterSpacing: "1px",
@@ -502,17 +499,17 @@ export default function ChapterNav() {
                                             whileTap={{ scale: 0.98 }}
                                             style={{
                                                 cursor: "pointer",
-                                                padding: "14px 16px",
+                                                padding: isMobile ? "12px 14px" : "14px 16px",
                                                 marginBottom: "10px",
-                                                background: effect.state 
+                                                background: effect.state
                                                     ? "linear-gradient(90deg, rgba(0, 243, 255, 0.15) 0%, rgba(0, 243, 255, 0.05) 100%)"
                                                     : "rgba(255, 0, 68, 0.08)",
-                                                border: `1px solid ${effect.state 
-                                                    ? 'rgba(0, 243, 255, 0.4)' 
+                                                border: `1px solid ${effect.state
+                                                    ? 'rgba(0, 243, 255, 0.4)'
                                                     : 'rgba(255, 0, 68, 0.3)'}`,
                                                 color: effect.state ? "var(--neon-blue)" : "var(--text-secondary)",
                                                 fontFamily: "Rajdhani, sans-serif",
-                                                fontSize: "0.9rem",
+                                                fontSize: isMobile ? "0.8rem" : "0.9rem",
                                                 fontWeight: 600,
                                                 transition: "all 0.2s",
                                                 display: "flex",
@@ -523,51 +520,52 @@ export default function ChapterNav() {
                                             }}
                                         >
                                             <span style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                                                <span style={{ fontSize: "1.2rem" }}>{effect.icon}</span>
+                                                <span style={{ fontSize: isMobile ? "1rem" : "1.2rem" }}>{effect.icon}</span>
                                                 <span>{effect.name}</span>
                                             </span>
                                             <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                                                <span style={{
-                                                    background: "rgba(0, 243, 255, 0.2)",
-                                                    padding: "4px 10px",
-                                                    borderRadius: "4px",
-                                                    fontFamily: "Orbitron",
-                                                    fontSize: "0.7rem",
-                                                    color: "var(--neon-primary)",
-                                                    fontWeight: 700,
-                                                    border: "1px solid rgba(0, 243, 255, 0.3)"
-                                                }}>
-                                                    {effect.key}
-                                                </span>
-                                                {/* Toggle Switch */}
+                                                {!isSmallMobile && (
+                                                    <span style={{
+                                                        background: "rgba(0, 243, 255, 0.2)",
+                                                        padding: "4px 10px",
+                                                        borderRadius: "4px",
+                                                        fontFamily: "Orbitron",
+                                                        fontSize: "0.65rem",
+                                                        color: "var(--neon-primary)",
+                                                        fontWeight: 700,
+                                                        border: "1px solid rgba(0, 243, 255, 0.3)"
+                                                    }}>
+                                                        {effect.key}
+                                                    </span>
+                                                )}
                                                 <div style={{
-                                                    width: "44px",
-                                                    height: "24px",
-                                                    background: effect.state 
-                                                        ? "var(--neon-primary)" 
+                                                    width: isMobile ? "40px" : "44px",
+                                                    height: isMobile ? "22px" : "24px",
+                                                    background: effect.state
+                                                        ? "var(--neon-primary)"
                                                         : "rgba(255, 255, 255, 0.2)",
                                                     borderRadius: "12px",
                                                     position: "relative",
                                                     transition: "all 0.3s",
-                                                    border: "2px solid " + (effect.state 
-                                                        ? "var(--neon-blue)" 
+                                                    border: "2px solid " + (effect.state
+                                                        ? "var(--neon-blue)"
                                                         : "rgba(255, 255, 255, 0.3)")
                                                 }}>
                                                     <motion.div
-                                                        animate={{ x: effect.state ? 20 : 0 }}
+                                                        animate={{ x: effect.state ? (isMobile ? 18 : 20) : 0 }}
                                                         transition={{ type: "spring", stiffness: 500, damping: 30 }}
                                                         style={{
-                                                            width: "18px",
-                                                            height: "18px",
-                                                            background: effect.state 
-                                                                ? "var(--darker-bg)" 
+                                                            width: isMobile ? "16px" : "18px",
+                                                            height: isMobile ? "16px" : "18px",
+                                                            background: effect.state
+                                                                ? "var(--darker-bg)"
                                                                 : "rgba(255, 255, 255, 0.8)",
                                                             borderRadius: "50%",
                                                             position: "absolute",
                                                             top: "1px",
                                                             left: "1px",
-                                                            boxShadow: effect.state 
-                                                                ? "0 0 8px var(--neon-primary)" 
+                                                            boxShadow: effect.state
+                                                                ? "0 0 8px var(--neon-primary)"
                                                                 : "none"
                                                         }}
                                                     />
@@ -577,16 +575,15 @@ export default function ChapterNav() {
                                     ))}
                                 </ul>
 
-                                {/* Audio Controls Section */}
-                                <div style={{ 
-                                    marginTop: "20px", 
-                                    paddingTop: "16px", 
-                                    borderTop: "1px solid rgba(0, 243, 255, 0.2)" 
+                                <div style={{
+                                    marginTop: "18px",
+                                    paddingTop: "14px",
+                                    borderTop: "1px solid rgba(0, 243, 255, 0.2)"
                                 }}>
                                     <h4 style={{
                                         color: "var(--neon-secondary)",
-                                        fontSize: "0.8rem",
-                                        marginBottom: "12px",
+                                        fontSize: isMobile ? "0.75rem" : "0.8rem",
+                                        marginBottom: "10px",
                                         fontFamily: "Orbitron",
                                         textTransform: "uppercase",
                                         letterSpacing: "1px",
@@ -606,17 +603,17 @@ export default function ChapterNav() {
                                                 whileTap={{ scale: 0.98 }}
                                                 style={{
                                                     cursor: "pointer",
-                                                    padding: "12px 16px",
+                                                    padding: isMobile ? "10px 14px" : "12px 16px",
                                                     marginBottom: "8px",
-                                                    background: audio.state 
-                                                        ? "rgba(0, 243, 255, 0.1)" 
+                                                    background: audio.state
+                                                        ? "rgba(0, 243, 255, 0.1)"
                                                         : "rgba(255, 0, 68, 0.08)",
-                                                    border: `1px solid ${audio.state 
-                                                        ? 'rgba(0, 243, 255, 0.3)' 
+                                                    border: `1px solid ${audio.state
+                                                        ? 'rgba(0, 243, 255, 0.3)'
                                                         : 'rgba(255, 0, 68, 0.3)'}`,
                                                     color: audio.state ? "var(--neon-blue)" : "var(--text-secondary)",
                                                     fontFamily: "Rajdhani, sans-serif",
-                                                    fontSize: "0.9rem",
+                                                    fontSize: isMobile ? "0.8rem" : "0.9rem",
                                                     fontWeight: 600,
                                                     transition: "all 0.2s",
                                                     display: "flex",
@@ -626,31 +623,32 @@ export default function ChapterNav() {
                                                 }}
                                             >
                                                 <span style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                                                    <span style={{ fontSize: "1.2rem" }}>{audio.icon}</span>
+                                                    <span style={{ fontSize: isMobile ? "1rem" : "1.2rem" }}>{audio.icon}</span>
                                                     <span>{audio.name}</span>
                                                 </span>
                                                 <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                                                    <span style={{
-                                                        background: "rgba(0, 243, 255, 0.2)",
-                                                        padding: "4px 10px",
-                                                        borderRadius: "4px",
-                                                        fontFamily: "Orbitron",
-                                                        fontSize: "0.7rem",
-                                                        color: "var(--neon-primary)",
-                                                        fontWeight: 700
-                                                    }}>
-                                                        {audio.key}
-                                                    </span>
-                                                    {/* Toggle Indicator */}
+                                                    {!isSmallMobile && (
+                                                        <span style={{
+                                                            background: "rgba(0, 243, 255, 0.2)",
+                                                            padding: "4px 10px",
+                                                            borderRadius: "4px",
+                                                            fontFamily: "Orbitron",
+                                                            fontSize: "0.65rem",
+                                                            color: "var(--neon-primary)",
+                                                            fontWeight: 700
+                                                        }}>
+                                                            {audio.key}
+                                                        </span>
+                                                    )}
                                                     <div style={{
                                                         width: "12px",
                                                         height: "12px",
                                                         borderRadius: "50%",
-                                                        background: audio.state 
-                                                            ? "var(--neon-primary)" 
+                                                        background: audio.state
+                                                            ? "var(--neon-primary)"
                                                             : "rgba(255, 0, 68, 0.6)",
-                                                        boxShadow: audio.state 
-                                                            ? "0 0 10px var(--neon-primary)" 
+                                                        boxShadow: audio.state
+                                                            ? "0 0 10px var(--neon-primary)"
                                                             : "0 0 8px rgba(255, 0, 68, 0.6)",
                                                         transition: "all 0.3s"
                                                     }} />
@@ -660,10 +658,9 @@ export default function ChapterNav() {
                                     </ul>
                                 </div>
 
-                                {/* Pro Tip */}
                                 <div style={{
-                                    marginTop: "20px",
-                                    padding: "12px",
+                                    marginTop: "18px",
+                                    padding: "10px",
                                     background: "rgba(0, 243, 255, 0.05)",
                                     border: "1px solid rgba(0, 243, 255, 0.2)",
                                     borderRadius: "4px",
@@ -671,12 +668,12 @@ export default function ChapterNav() {
                                 }}>
                                     <p style={{
                                         margin: 0,
-                                        fontSize: "0.8rem",
+                                        fontSize: isMobile ? "0.75rem" : "0.8rem",
                                         color: "var(--text-secondary)",
                                         fontFamily: "Rajdhani",
                                         lineHeight: "1.5"
                                     }}>
-                                        <span style={{ color: "var(--neon-primary)", fontWeight: 700 }}>💡 Pro Tip:</span> Use keyboard shortcuts for faster control. Press keys even when menu is closed!
+                                        <span style={{ color: "var(--neon-primary)", fontWeight: 700 }}>💡 Tip:</span> {isMobile ? 'Tap to toggle' : 'Use keyboard shortcuts for faster control'}
                                     </p>
                                 </div>
                             </motion.div>
@@ -688,7 +685,6 @@ export default function ChapterNav() {
     );
 }
 
-// Helper style for keyboard key display
 const kbdStyle = {
     display: "inline-block",
     padding: "2px 8px",
@@ -696,7 +692,7 @@ const kbdStyle = {
     border: "1px solid rgba(0, 243, 255, 0.3)",
     borderRadius: "3px",
     fontFamily: "Orbitron",
-    fontSize: "0.75rem",
+    fontSize: "0.7rem",
     color: "var(--neon-primary)",
     fontWeight: 700,
     marginRight: "8px"
