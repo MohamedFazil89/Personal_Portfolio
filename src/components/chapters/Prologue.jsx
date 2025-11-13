@@ -94,7 +94,7 @@ const Prologue = () => {
           style={{ textAlign: 'center', zIndex: 2 }}
         >
           <h1
-            className="glitch neon-text"
+            className="glitch neon-text "
             data-text="INITIALIZING..."
             style={{ fontSize: '4rem', marginBottom: '2rem' }}
           >
@@ -158,6 +158,7 @@ const Prologue = () => {
           <img
             src="/assets/avatar.png"
             alt="Fazil Avatar"
+            className='avatar-image'
             style={{
               width: '100%',
               height: '100%',

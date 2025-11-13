@@ -12,6 +12,8 @@ import Trails from "./components/chapters/Trials"
 import Vision from "./components/chapters/Vision"
 import Connection from './components/chapters/Connection';
 import ChapterNav from './components/ui/ChapterNav';
+import SecretScanner from './components/game/SecretScanner';
+import PixelPet from './components/game/PixelPet';
 
 function App() {
   const currentChapter = useGameStore((state) => state.currentChapter);
@@ -62,6 +64,12 @@ function App() {
 
       {/* Chapter Navigation */}
       <ChapterNav />
+      {/* Secret Scanner */}
+      {/* <SecretScanner/> */}
+
+      {/* Pet */}
+      <PixelPet/>
+
       {/* Current chapter */}
       {renderChapter()}
     </div>

@@ -1,5 +1,6 @@
 // store/gameStore.js
 import { create } from 'zustand';
+import audioManager from '../utils/audioManager'; // ADD THIS IMPORT
 
 const useGameStore = create((set) => ({
   // Progress tracking
@@ -20,14 +21,12 @@ const useGameStore = create((set) => ({
   
   // Actions
   completeChapter: (chapter) => set((state) => {
-    // ✅ FIX: Only add chapter if NOT already completed
     if (!state.completedChapters.includes(chapter)) {
       return {
         completedChapters: [...state.completedChapters, chapter],
         xp: state.xp + 100
       };
     }
-    // Already completed: do nothing
     return {};
   }),
   
@@ -40,8 +39,19 @@ const useGameStore = create((set) => ({
   
   setDialogue: (dialogue) => set({ currentDialogue: dialogue }),
   
-  toggleMusic: () => set((state) => ({ musicEnabled: !state.musicEnabled })),
-  toggleSFX: () => set((state) => ({ sfxEnabled: !state.sfxEnabled })),
+  // ✅ FIXED: Actually toggle audio
+  toggleMusic: () => set((state) => {
+    const newState = !state.musicEnabled;
+    audioManager.toggleMusic(newState);
+    return { musicEnabled: newState };
+  }),
+  
+  // ✅ FIXED: Actually toggle SFX
+  toggleSFX: () => set((state) => {
+    const newState = !state.sfxEnabled;
+    audioManager.toggleSFX(newState);
+    return { sfxEnabled: newState };
+  }),
   
   // Reset for development
   reset: () => set({

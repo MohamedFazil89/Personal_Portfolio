@@ -291,6 +291,7 @@ const Vision = ({ gridEnabled = true }) => {
                             gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
                             gap: '25px',
                             marginBottom: '60px'
+                            
                         }}>
                             {collaborationInterests.map((collab, index) => (
                                 <CollaborationCard key={index} collab={collab} index={index} />
