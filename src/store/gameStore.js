@@ -3,7 +3,7 @@ import { create } from 'zustand';
 
 const useGameStore = create((set) => ({
   // Progress tracking
-  currentChapter: 'prologue', // prologue, origin, trials, vision, connection
+  currentChapter: 'prologue',
   completedChapters: [],
   xp: 0,
   unlockedSkills: [],
@@ -19,10 +19,17 @@ const useGameStore = create((set) => ({
   dialogueHistory: [],
   
   // Actions
-  completeChapter: (chapter) => set((state) => ({
-    completedChapters: [...state.completedChapters, chapter],
-    xp: state.xp + 100
-  })),
+  completeChapter: (chapter) => set((state) => {
+    // ✅ FIX: Only add chapter if NOT already completed
+    if (!state.completedChapters.includes(chapter)) {
+      return {
+        completedChapters: [...state.completedChapters, chapter],
+        xp: state.xp + 100
+      };
+    }
+    // Already completed: do nothing
+    return {};
+  }),
   
   setCurrentChapter: (chapter) => set({ currentChapter: chapter }),
   

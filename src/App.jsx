@@ -11,7 +11,7 @@ import EffectsSettings from './components/ui/EffectsSettings';
 import Trails from "./components/chapters/Trials"
 import Vision from "./components/chapters/Vision"
 import Connection from './components/chapters/Connection';
-
+import ChapterNav from './components/ui/ChapterNav';
 
 function App() {
   const currentChapter = useGameStore((state) => state.currentChapter);
@@ -40,7 +40,7 @@ function App() {
       case 'trials':
         return <Trails />;
       case 'vision':
-        return <Vision/>
+        return <Vision />
       case 'connection':
         return <Connection />
       default:
@@ -60,6 +60,8 @@ function App() {
       {/* Audio controls */}
       <AudioControls />
 
+      {/* Chapter Navigation */}
+      <ChapterNav />
       {/* Current chapter */}
       {renderChapter()}
     </div>
@@ -69,6 +71,9 @@ function App() {
 // Simple Progress Bar Component
 const ProgressBar = () => {
   const { completedChapters, xp } = useGameStore();
+  const uniqueChapters = Array.from(new Set(completedChapters)); // deduplication
+  console.log(uniqueChapters)
+
 
   return (
     <div style={{
@@ -82,7 +87,7 @@ const ProgressBar = () => {
     }}>
       <div style={{
         height: '100%',
-        width: `${(completedChapters.length / 5) * 100}%`,
+        width: `${(uniqueChapters.length / 5) * 100}%`, // only unique counts
         background: 'linear-gradient(90deg, var(--neon-dark-red), var(--neon-primary), var(--neon-secondary))',
         boxShadow: 'var(--glow-primary)',
         transition: 'width 0.8s cubic-bezier(0.4, 0, 0.2, 1)'

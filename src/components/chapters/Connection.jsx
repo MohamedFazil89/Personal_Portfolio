@@ -46,8 +46,14 @@ const Connection = ({ gridEnabled = true }) => {
 
     const handleDownloadResume = () => {
         audioManager.play('powerUp');
-        // Trigger download
-        window.open(downloadResume.url, '_blank');
+        // Create a temporary anchor element for proper browser download
+        const link = document.createElement('a');
+        link.href = '/resume.pdf'; // Update to match your public folder path & filename
+        link.download = 'FazilResume.pdf'; // Optional: set suggested filename
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
     };
 
     return (
