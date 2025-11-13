@@ -10,6 +10,8 @@ import FloatingHexagons from './components/effects/FloatingHexagons';
 import EffectsSettings from './components/ui/EffectsSettings';
 import Trails from "./components/chapters/Trials"
 import Vision from "./components/chapters/Vision"
+import Connection from './components/chapters/Connection';
+
 
 function App() {
   const currentChapter = useGameStore((state) => state.currentChapter);
@@ -39,6 +41,8 @@ function App() {
         return <Trails />;
       case 'vision':
         return <Vision/>
+      case 'connection':
+        return <Connection />
       default:
         return <Prologue />;
     }

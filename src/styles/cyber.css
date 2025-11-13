@@ -79,6 +79,22 @@ html::-webkit-scrollbar-thumb:hover {
   background: var(--neon-blue);
 }
 
+/* === RESPONSIVE DESIGN === */
+@media (max-width: 768px) {
+  .chapter-container {
+    padding: 2rem 1rem;
+  }
+  
+  .neon-text {
+    font-size: 2.5rem !important;
+  }
+  
+  /* Stack contact form and social links on mobile */
+  div[style*="gridTemplateColumns: '1fr 1fr'"] {
+    grid-template-columns: 1fr !important;
+  }
+}
+
 body {
   font-family: 'Rajdhani', 'Orbitron', sans-serif;
   background: var(--darker-bg);
