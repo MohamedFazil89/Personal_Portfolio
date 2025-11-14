@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import audioManager from '../../utils/audioManager';
+import SecurityVisualization from './SecurityVisualization';
 
 const ContactForm = () => {
   const [formData, setFormData] = useState({
@@ -12,6 +13,7 @@ const ContactForm = () => {
   });
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showSecurityViz, setShowSecurityViz] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   const handleChange = (e) => {
@@ -61,22 +63,23 @@ const ContactForm = () => {
       return;
     }
     
+    // Start security visualization
     setIsSubmitting(true);
+    setShowSecurityViz(true);
     audioManager.play('powerUp');
+  };
+
+  const handleSecurityComplete = () => {
+    // Called when security visualization completes all steps
+    setShowSecurityViz(false);
+    setIsSubmitting(false);
+    setIsSubmitted(true);
     
-    // Simulate API call (replace with your actual endpoint)
+    // Reset form after 3 seconds
     setTimeout(() => {
-      console.log('Form submitted:', formData);
-      setIsSubmitting(false);
-      setIsSubmitted(true);
-      audioManager.play('success');
-      
-      // Reset form after 3 seconds
-      setTimeout(() => {
-        setIsSubmitted(false);
-        setFormData({ name: '', email: '', subject: '', message: '' });
-      }, 3000);
-    }, 2000);
+      setIsSubmitted(false);
+      setFormData({ name: '', email: '', subject: '', message: '' });
+    }, 3000);
   };
 
   if (isSubmitted) {
@@ -107,178 +110,242 @@ const ContactForm = () => {
           fontWeight: '700',
           textShadow: '0 0 20px var(--neon-blue)'
         }}>
-          Transmission Received!
+          Secure Transmission Complete!
         </h3>
         <p style={{
           fontSize: '1.2rem',
-          color: 'var(--text-secondary)'
+          color: 'var(--text-secondary)',
+          marginBottom: '15px'
         }}>
-          Your message has been sent successfully. I'll get back to you soon!
+          Your encrypted message has been received successfully.
+        </p>
+        <p style={{
+          fontSize: '1rem',
+          color: 'var(--text-tertiary)'
+        }}>
+          I'll get back to you soon!
         </p>
       </motion.div>
     );
   }
 
   return (
-    <motion.form
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8 }}
-      onSubmit={handleSubmit}
-      style={{
-        background: 'rgba(10, 14, 39, 0.8)',
-        border: '2px solid rgba(0, 243, 255, 0.3)',
-        padding: '40px',
-        backdropFilter: 'blur(10px)',
-        borderRadius: '10px'
-      }}
-    >
-      <h3 style={{
-        fontSize: '2rem',
-        color: 'var(--neon-blue)',
-        marginBottom: '30px',
-        textAlign: 'center',
-        fontWeight: '700',
-        textShadow: '0 0 20px var(--neon-blue)'
-      }}>
-        &gt; SEND_TRANSMISSION
-      </h3>
-
-      {/* Name Field */}
-      <FormField
-        label="Name"
-        name="name"
-        type="text"
-        value={formData.name}
-        onChange={handleChange}
-        error={errors.name}
-        placeholder="Your name"
-        icon="👤"
-      />
-
-      {/* Email Field */}
-      <FormField
-        label="Email"
-        name="email"
-        type="email"
-        value={formData.email}
-        onChange={handleChange}
-        error={errors.email}
-        placeholder="your.email@example.com"
-        icon="📧"
-      />
-
-      {/* Subject Field */}
-      <FormField
-        label="Subject"
-        name="subject"
-        type="text"
-        value={formData.subject}
-        onChange={handleChange}
-        error={errors.subject}
-        placeholder="What's this about?"
-        icon="📋"
-      />
-
-      {/* Message Field */}
-      <div style={{ marginBottom: '25px' }}>
-        <label style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '10px',
-          color: 'var(--text-primary)',
-          fontSize: '1rem',
-          marginBottom: '10px',
-          fontWeight: '600'
-        }}>
-          <span style={{ fontSize: '1.2rem' }}>💬</span>
-          Message
-        </label>
-        <textarea
-          name="message"
-          value={formData.message}
-          onChange={handleChange}
-          onFocus={() => audioManager.play('hover')}
-          placeholder="Tell me about your project, idea, or just say hi..."
-          rows="6"
-          style={{
-            width: '100%',
-            padding: '15px',
-            background: 'rgba(0, 0, 0, 0.5)',
-            border: `2px solid ${errors.message ? '#ff0066' : 'rgba(0, 243, 255, 0.3)'}`,
-            borderRadius: '8px',
-            color: 'var(--text-primary)',
-            fontSize: '1rem',
-            fontFamily: 'inherit',
-            resize: 'vertical',
-            outline: 'none',
-            transition: 'all 0.3s'
-          }}
+    <>
+      {/* Security Visualization Overlay - THIS IS THE KEY COMPONENT */}
+      {showSecurityViz && (
+        <SecurityVisualization
+          isActive={showSecurityViz}
+          formData={formData}
+          onComplete={handleSecurityComplete}
         />
-        {errors.message && (
-          <motion.span
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            style={{
-              display: 'block',
-              color: '#ff0066',
-              fontSize: '0.85rem',
-              marginTop: '8px'
-            }}
-          >
-            {errors.message}
-          </motion.span>
-        )}
-      </div>
+      )}
 
-      {/* Submit Button */}
-      <motion.button
-        type="submit"
-        disabled={isSubmitting}
-        whileHover={{ scale: isSubmitting ? 1 : 1.05 }}
-        whileTap={{ scale: isSubmitting ? 1 : 0.95 }}
-        onMouseEnter={() => !isSubmitting && audioManager.play('hover')}
-        className="neon-button"
+      <motion.form
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+        onSubmit={handleSubmit}
         style={{
-          width: '100%',
-          padding: '18px',
-          fontSize: '1.3rem',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: '10px',
-          opacity: isSubmitting ? 0.6 : 1,
-          cursor: isSubmitting ? 'not-allowed' : 'pointer'
+          background: 'rgba(10, 14, 39, 0.8)',
+          border: '2px solid rgba(0, 243, 255, 0.3)',
+          padding: '40px',
+          backdropFilter: 'blur(10px)',
+          borderRadius: '10px',
+          position: 'relative'
         }}
       >
-        {isSubmitting ? (
-          <>
-            <motion.span
-              animate={{ rotate: 360 }}
-              transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-            >
-              ⚡
-            </motion.span>
-            Transmitting...
-          </>
-        ) : (
-          <>
-            <span>🚀</span>
-            Send Message
-          </>
-        )}
-      </motion.button>
+        {/* Security Badge */}
+        <div style={{
+          position: 'absolute',
+          top: '15px',
+          right: '15px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+          padding: '8px 15px',
+          background: 'rgba(0, 255, 136, 0.1)',
+          border: '1px solid #00ff88',
+          borderRadius: '20px',
+          fontSize: '0.8rem',
+          color: '#00ff88'
+        }}>
+          <span>🔒</span>
+          <span style={{ fontWeight: '600' }}>End-to-End Encrypted</span>
+        </div>
 
-      {/* Character Count */}
-      <div style={{
-        marginTop: '15px',
-        textAlign: 'center',
-        fontSize: '0.85rem',
-        color: 'var(--text-tertiary)'
-      }}>
-        {formData.message.length} / 1000 characters
-      </div>
-    </motion.form>
+        <h3 style={{
+          fontSize: '2rem',
+          color: 'var(--neon-blue)',
+          marginBottom: '30px',
+          textAlign: 'center',
+          fontWeight: '700',
+          textShadow: '0 0 20px var(--neon-blue)'
+        }}>
+          &gt; SEND_TRANSMISSION
+        </h3>
+
+        {/* Name Field */}
+        <FormField
+          label="Name"
+          name="name"
+          type="text"
+          value={formData.name}
+          onChange={handleChange}
+          error={errors.name}
+          placeholder="Your name"
+          icon="👤"
+        />
+
+        {/* Email Field */}
+        <FormField
+          label="Email"
+          name="email"
+          type="email"
+          value={formData.email}
+          onChange={handleChange}
+          error={errors.email}
+          placeholder="your.email@example.com"
+          icon="📧"
+        />
+
+        {/* Subject Field */}
+        <FormField
+          label="Subject"
+          name="subject"
+          type="text"
+          value={formData.subject}
+          onChange={handleChange}
+          error={errors.subject}
+          placeholder="What's this about?"
+          icon="📋"
+        />
+
+        {/* Message Field */}
+        <div style={{ marginBottom: '25px' }}>
+          <label style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '10px',
+            color: 'var(--text-primary)',
+            fontSize: '1rem',
+            marginBottom: '10px',
+            fontWeight: '600'
+          }}>
+            <span style={{ fontSize: '1.2rem' }}>💬</span>
+            Message
+          </label>
+          <textarea
+            name="message"
+            value={formData.message}
+            onChange={handleChange}
+            onFocus={() => audioManager.play('hover')}
+            placeholder="Tell me about your project, idea, or just say hi..."
+            rows="6"
+            style={{
+              width: '100%',
+              padding: '15px',
+              background: 'rgba(0, 0, 0, 0.5)',
+              border: `2px solid ${errors.message ? '#ff0066' : 'rgba(0, 243, 255, 0.3)'}`,
+              borderRadius: '8px',
+              color: 'var(--text-primary)',
+              fontSize: '1rem',
+              fontFamily: 'inherit',
+              resize: 'vertical',
+              outline: 'none',
+              transition: 'all 0.3s'
+            }}
+          />
+          {errors.message && (
+            <motion.span
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              style={{
+                display: 'block',
+                color: '#ff0066',
+                fontSize: '0.85rem',
+                marginTop: '8px'
+              }}
+            >
+              {errors.message}
+            </motion.span>
+          )}
+        </div>
+
+        {/* Submit Button */}
+        <motion.button
+          type="submit"
+          disabled={isSubmitting}
+          whileHover={{ scale: isSubmitting ? 1 : 1.05 }}
+          whileTap={{ scale: isSubmitting ? 1 : 0.95 }}
+          onMouseEnter={() => !isSubmitting && audioManager.play('hover')}
+          className="neon-button"
+          style={{
+            width: '100%',
+            padding: '18px',
+            fontSize: '1.3rem',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '10px',
+            opacity: isSubmitting ? 0.6 : 1,
+            cursor: isSubmitting ? 'not-allowed' : 'pointer'
+          }}
+        >
+          {isSubmitting ? (
+            <>
+              <motion.span
+                animate={{ rotate: 360 }}
+                transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+              >
+                🔐
+              </motion.span>
+              Encrypting & Sending...
+            </>
+          ) : (
+            <>
+              <span>🔒</span>
+              Send Secure Message
+            </>
+          )}
+        </motion.button>
+
+        {/* Character Count */}
+        <div style={{
+          marginTop: '15px',
+          textAlign: 'center',
+          fontSize: '0.85rem',
+          color: 'var(--text-tertiary)'
+        }}>
+          {formData.message.length} / 1000 characters
+        </div>
+
+        {/* Security Info */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5 }}
+          style={{
+            marginTop: '20px',
+            padding: '15px',
+            background: 'rgba(0, 243, 255, 0.05)',
+            border: '1px solid rgba(0, 243, 255, 0.2)',
+            borderRadius: '8px',
+            fontSize: '0.85rem',
+            color: 'var(--text-secondary)',
+            lineHeight: '1.6'
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
+            <span style={{ fontSize: '1.2rem' }}>🛡️</span>
+            <div>
+              <strong style={{ color: 'var(--text-primary)' }}>Your Privacy Matters:</strong> 
+              {' '}All data is encrypted using AES-256 encryption before transmission and sent through a secure HTTPS tunnel. 
+              We never store sensitive information in plaintext and follow industry-standard security practices.
+            </div>
+          </div>
+        </motion.div>
+      </motion.form>
+    </>
   );
 };
 
