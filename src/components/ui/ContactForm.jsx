@@ -1,8 +1,12 @@
 // components/ui/ContactForm.jsx
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import emailjs from '@emailjs/browser';
 import audioManager from '../../utils/audioManager';
 import SecurityVisualization from './SecurityVisualization';
+
+// Initialize EmailJS once
+emailjs.init('LoWakzIuDmCxZLO1Z');
 
 const ContactForm = () => {
   const [formData, setFormData] = useState({
@@ -15,13 +19,16 @@ const ContactForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSecurityViz, setShowSecurityViz] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [emailError, setEmailError] = useState('');
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
-    // Clear error when user types
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: '' }));
+    }
+    if (emailError) {
+      setEmailError('');
     }
   };
 
@@ -50,6 +57,48 @@ const ContactForm = () => {
     
     return newErrors;
   };
+  
+const sendEmails = async () => {
+  try {
+    // Email 1: Admin notification to your inbox
+    await emailjs.send(
+      'service_h02jq08',
+      'template_iu5rbaa',
+      {
+        to_email: 'nmohammedfazil790@gmail.com', // Where to send
+        from_name: formData.name,      // {{from_name}}
+        from_email: formData.email,    // {{from_email}}
+        subject: formData.subject,     // {{subject}}
+        message: formData.message      // {{message}}
+      },
+      'LoWakzIuDmCxZLO1Z'
+    );
+    console.log('✅ Email sent to your inbox!');
+
+    // Email 2: Auto-reply thank you to VISITOR
+    await emailjs.send(
+      'service_h02jq08',
+      'template_dbout13', // Your thank you template
+      {
+        to_email: formData.email,      // SEND TO THEM ✅
+        name: formData.name,           // {{name}} - THIS WAS MISSING!
+        email: formData.email,         // {{email}}
+        subject: formData.subject,     // {{subject}}
+        message: formData.message      // {{message}}
+      },
+      'LoWakzIuDmCxZLO1Z'
+    );
+    console.log('✅ Thank you email sent to visitor!');
+
+    return true;
+  } catch (error) {
+    console.error('❌ Failed to send email:', error);
+    setEmailError('Failed to send message. Please try again later.');
+    return false;
+  }
+};
+
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -69,17 +118,34 @@ const ContactForm = () => {
     audioManager.play('powerUp');
   };
 
-  const handleSecurityComplete = () => {
-    // Called when security visualization completes all steps
-    setShowSecurityViz(false);
-    setIsSubmitting(false);
-    setIsSubmitted(true);
-    
-    // Reset form after 3 seconds
-    setTimeout(() => {
-      setIsSubmitted(false);
-      setFormData({ name: '', email: '', subject: '', message: '' });
-    }, 3000);
+  const handleSecurityComplete = async () => {
+    try {
+      // Send BOTH emails after animation
+      const success = await sendEmails();
+      
+      setShowSecurityViz(false);
+      setIsSubmitting(false);
+      
+      if (success) {
+        setIsSubmitted(true);
+        audioManager.play('success');
+        
+        // Reset form after 3 seconds
+        setTimeout(() => {
+          setIsSubmitted(false);
+          setFormData({ name: '', email: '', subject: '', message: '' });
+          setEmailError('');
+        }, 3000);
+      } else {
+        audioManager.play('glitch');
+      }
+    } catch (error) {
+      console.error('Error in handleSecurityComplete:', error);
+      setShowSecurityViz(false);
+      setIsSubmitting(false);
+      setEmailError('An unexpected error occurred. Please try again.');
+      audioManager.play('glitch');
+    }
   };
 
   if (isSubmitted) {
@@ -117,13 +183,20 @@ const ContactForm = () => {
           color: 'var(--text-secondary)',
           marginBottom: '15px'
         }}>
-          Your encrypted message has been received successfully.
+          ✅ Your encrypted message has been sent successfully.
         </p>
         <p style={{
           fontSize: '1rem',
+          color: 'var(--text-tertiary)',
+          marginBottom: '10px'
+        }}>
+          I'll get back to you soon at {formData.email}!
+        </p>
+        <p style={{
+          fontSize: '0.95rem',
           color: 'var(--text-tertiary)'
         }}>
-          I'll get back to you soon!
+          📧 A thank you message has also been sent to your email.
         </p>
       </motion.div>
     );
@@ -131,7 +204,7 @@ const ContactForm = () => {
 
   return (
     <>
-      {/* Security Visualization Overlay - THIS IS THE KEY COMPONENT */}
+      {/* Security Visualization Overlay - SHOWS ENCRYPTION ANIMATION */}
       {showSecurityViz && (
         <SecurityVisualization
           isActive={showSecurityViz}
@@ -183,6 +256,26 @@ const ContactForm = () => {
         }}>
           &gt; SEND_TRANSMISSION
         </h3>
+
+        {/* Email Error Alert */}
+        {emailError && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            style={{
+              padding: '15px',
+              background: 'rgba(255, 0, 102, 0.1)',
+              border: '2px solid #ff0066',
+              borderRadius: '8px',
+              color: '#ff0066',
+              marginBottom: '20px',
+              fontSize: '0.95rem',
+              fontWeight: '600'
+            }}
+          >
+            ❌ {emailError}
+          </motion.div>
+        )}
 
         {/* Name Field */}
         <FormField

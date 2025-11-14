@@ -79,7 +79,7 @@ function App() {
       <ChapterNav />
 
       {/* Pet - Scales based on device */}
-      <PixelPet />
+      {/* <PixelPet /> */}
 
       {/* Current chapter */}
       {renderChapter()}
