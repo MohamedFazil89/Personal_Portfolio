@@ -1,11 +1,11 @@
-// components/ui/ContactForm.jsx
+// components/ui/ContactForm.jsx - FULLY RESPONSIVE VERSION
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import emailjs from '@emailjs/browser';
 import audioManager from '../../utils/audioManager';
 import SecurityVisualization from './SecurityVisualization';
+import { useResponsive } from '../../utils/responsiveUtils';
 
-// Initialize EmailJS once
 emailjs.init('LoWakzIuDmCxZLO1Z');
 
 const ContactForm = () => {
@@ -20,6 +20,7 @@ const ContactForm = () => {
   const [showSecurityViz, setShowSecurityViz] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [emailError, setEmailError] = useState('');
+  const { isMobile, isTablet, isSmallMobile } = useResponsive();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -58,47 +59,41 @@ const ContactForm = () => {
     return newErrors;
   };
   
-const sendEmails = async () => {
-  try {
-    // Email 1: Admin notification to your inbox
-    await emailjs.send(
-      'service_h02jq08',
-      'template_iu5rbaa',
-      {
-        to_email: 'nmohammedfazil790@gmail.com', // Where to send
-        from_name: formData.name,      // {{from_name}}
-        from_email: formData.email,    // {{from_email}}
-        subject: formData.subject,     // {{subject}}
-        message: formData.message      // {{message}}
-      },
-      'LoWakzIuDmCxZLO1Z'
-    );
-    console.log('✅ Email sent to your inbox!');
+  const sendEmails = async () => {
+    try {
+      await emailjs.send(
+        'service_h02jq08',
+        'template_iu5rbaa',
+        {
+          to_email: 'nmohammedfazil790@gmail.com',
+          from_name: formData.name,
+          from_email: formData.email,
+          subject: formData.subject,
+          message: formData.message
+        },
+        'LoWakzIuDmCxZLO1Z'
+      );
 
-    // Email 2: Auto-reply thank you to VISITOR
-    await emailjs.send(
-      'service_h02jq08',
-      'template_dbout13', // Your thank you template
-      {
-        to_email: formData.email,      // SEND TO THEM ✅
-        name: formData.name,           // {{name}} - THIS WAS MISSING!
-        email: formData.email,         // {{email}}
-        subject: formData.subject,     // {{subject}}
-        message: formData.message      // {{message}}
-      },
-      'LoWakzIuDmCxZLO1Z'
-    );
-    console.log('✅ Thank you email sent to visitor!');
+      await emailjs.send(
+        'service_h02jq08',
+        'template_dbout13',
+        {
+          to_email: formData.email,
+          name: formData.name,
+          email: formData.email,
+          subject: formData.subject,
+          message: formData.message
+        },
+        'LoWakzIuDmCxZLO1Z'
+      );
 
-    return true;
-  } catch (error) {
-    console.error('❌ Failed to send email:', error);
-    setEmailError('Failed to send message. Please try again later.');
-    return false;
-  }
-};
-
-
+      return true;
+    } catch (error) {
+      console.error('❌ Failed to send email:', error);
+      setEmailError('Failed to send message. Please try again later.');
+      return false;
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -112,7 +107,6 @@ const sendEmails = async () => {
       return;
     }
     
-    // Start security visualization
     setIsSubmitting(true);
     setShowSecurityViz(true);
     audioManager.play('powerUp');
@@ -120,7 +114,6 @@ const sendEmails = async () => {
 
   const handleSecurityComplete = async () => {
     try {
-      // Send BOTH emails after animation
       const success = await sendEmails();
       
       setShowSecurityViz(false);
@@ -130,7 +123,6 @@ const sendEmails = async () => {
         setIsSubmitted(true);
         audioManager.play('success');
         
-        // Reset form after 3 seconds
         setTimeout(() => {
           setIsSubmitted(false);
           setFormData({ name: '', email: '', subject: '', message: '' });
@@ -154,7 +146,7 @@ const sendEmails = async () => {
         initial={{ scale: 0.8, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         style={{
-          padding: '60px 40px',
+          padding: isMobile ? '40px 25px' : isTablet ? '50px 35px' : '60px 40px',
           background: 'rgba(0, 243, 255, 0.1)',
           border: '3px solid var(--neon-blue)',
           borderRadius: '15px',
@@ -165,12 +157,12 @@ const sendEmails = async () => {
         <motion.div
           animate={{ rotate: 360 }}
           transition={{ duration: 1, ease: 'easeInOut' }}
-          style={{ fontSize: '5rem', marginBottom: '20px' }}
+          style={{ fontSize: isMobile ? '4rem' : '5rem', marginBottom: isMobile ? '15px' : '20px' }}
         >
           ✓
         </motion.div>
         <h3 style={{
-          fontSize: '2rem',
+          fontSize: isMobile ? '1.5rem' : isTablet ? '1.8rem' : '2rem',
           color: 'var(--neon-blue)',
           marginBottom: '15px',
           fontWeight: '700',
@@ -179,21 +171,23 @@ const sendEmails = async () => {
           Secure Transmission Complete!
         </h3>
         <p style={{
-          fontSize: '1.2rem',
+          fontSize: isMobile ? '1rem' : isTablet ? '1.1rem' : '1.2rem',
           color: 'var(--text-secondary)',
           marginBottom: '15px'
         }}>
           ✅ Your encrypted message has been sent successfully.
         </p>
         <p style={{
-          fontSize: '1rem',
+          fontSize: isMobile ? '0.9rem' : '1rem',
           color: 'var(--text-tertiary)',
-          marginBottom: '10px'
+          marginBottom: '10px',
+          wordBreak: 'break-word',
+          padding: isMobile ? '0 10px' : '0'
         }}>
           I'll get back to you soon at {formData.email}!
         </p>
         <p style={{
-          fontSize: '0.95rem',
+          fontSize: isMobile ? '0.85rem' : '0.95rem',
           color: 'var(--text-tertiary)'
         }}>
           📧 A thank you message has also been sent to your email.
@@ -204,7 +198,6 @@ const sendEmails = async () => {
 
   return (
     <>
-      {/* Security Visualization Overlay - SHOWS ENCRYPTION ANIMATION */}
       {showSecurityViz && (
         <SecurityVisualization
           isActive={showSecurityViz}
@@ -221,7 +214,7 @@ const sendEmails = async () => {
         style={{
           background: 'rgba(10, 14, 39, 0.8)',
           border: '2px solid rgba(0, 243, 255, 0.3)',
-          padding: '40px',
+          padding: isMobile ? '25px 20px' : isTablet ? '35px' : '40px',
           backdropFilter: 'blur(10px)',
           borderRadius: '10px',
           position: 'relative'
@@ -230,26 +223,27 @@ const sendEmails = async () => {
         {/* Security Badge */}
         <div style={{
           position: 'absolute',
-          top: '15px',
-          right: '15px',
+          top: isMobile ? '10px' : '15px',
+          right: isMobile ? '10px' : '15px',
           display: 'flex',
           alignItems: 'center',
-          gap: '8px',
-          padding: '8px 15px',
+          gap: isMobile ? '5px' : '8px',
+          padding: isMobile ? '6px 10px' : '8px 15px',
           background: 'rgba(0, 255, 136, 0.1)',
           border: '1px solid #00ff88',
           borderRadius: '20px',
-          fontSize: '0.8rem',
+          fontSize: isMobile ? '0.65rem' : '0.8rem',
           color: '#00ff88'
         }}>
           <span>🔒</span>
-          <span style={{ fontWeight: '600' }}>End-to-End Encrypted</span>
+          {!isSmallMobile && <span style={{ fontWeight: '600' }}>End-to-End Encrypted</span>}
         </div>
 
         <h3 style={{
-          fontSize: '2rem',
+          fontSize: isMobile ? '1.5rem' : isTablet ? '1.8rem' : '2rem',
           color: 'var(--neon-blue)',
-          marginBottom: '30px',
+          marginBottom: isMobile ? '25px' : '30px',
+          marginTop: isMobile ? '20px' : '0',
           textAlign: 'center',
           fontWeight: '700',
           textShadow: '0 0 20px var(--neon-blue)'
@@ -257,19 +251,18 @@ const sendEmails = async () => {
           &gt; SEND_TRANSMISSION
         </h3>
 
-        {/* Email Error Alert */}
         {emailError && (
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             style={{
-              padding: '15px',
+              padding: isMobile ? '12px' : '15px',
               background: 'rgba(255, 0, 102, 0.1)',
               border: '2px solid #ff0066',
               borderRadius: '8px',
               color: '#ff0066',
               marginBottom: '20px',
-              fontSize: '0.95rem',
+              fontSize: isMobile ? '0.85rem' : '0.95rem',
               fontWeight: '600'
             }}
           >
@@ -277,7 +270,6 @@ const sendEmails = async () => {
           </motion.div>
         )}
 
-        {/* Name Field */}
         <FormField
           label="Name"
           name="name"
@@ -287,9 +279,9 @@ const sendEmails = async () => {
           error={errors.name}
           placeholder="Your name"
           icon="👤"
+          isMobile={isMobile}
         />
 
-        {/* Email Field */}
         <FormField
           label="Email"
           name="email"
@@ -299,9 +291,9 @@ const sendEmails = async () => {
           error={errors.email}
           placeholder="your.email@example.com"
           icon="📧"
+          isMobile={isMobile}
         />
 
-        {/* Subject Field */}
         <FormField
           label="Subject"
           name="subject"
@@ -311,37 +303,37 @@ const sendEmails = async () => {
           error={errors.subject}
           placeholder="What's this about?"
           icon="📋"
+          isMobile={isMobile}
         />
 
-        {/* Message Field */}
-        <div style={{ marginBottom: '25px' }}>
+        <div style={{ marginBottom: isMobile ? '20px' : '25px' }}>
           <label style={{
             display: 'flex',
             alignItems: 'center',
             gap: '10px',
             color: 'var(--text-primary)',
-            fontSize: '1rem',
+            fontSize: isMobile ? '0.9rem' : '1rem',
             marginBottom: '10px',
             fontWeight: '600'
           }}>
-            <span style={{ fontSize: '1.2rem' }}>💬</span>
+            <span style={{ fontSize: isMobile ? '1rem' : '1.2rem' }}>💬</span>
             Message
           </label>
           <textarea
             name="message"
             value={formData.message}
             onChange={handleChange}
-            onFocus={() => audioManager.play('hover')}
+            onFocus={() => !isMobile && audioManager.play('hover')}
             placeholder="Tell me about your project, idea, or just say hi..."
-            rows="6"
+            rows={isMobile ? "4" : "6"}
             style={{
               width: '100%',
-              padding: '15px',
+              padding: isMobile ? '12px' : '15px',
               background: 'rgba(0, 0, 0, 0.5)',
               border: `2px solid ${errors.message ? '#ff0066' : 'rgba(0, 243, 255, 0.3)'}`,
               borderRadius: '8px',
               color: 'var(--text-primary)',
-              fontSize: '1rem',
+              fontSize: isMobile ? '0.9rem' : '1rem',
               fontFamily: 'inherit',
               resize: 'vertical',
               outline: 'none',
@@ -355,7 +347,7 @@ const sendEmails = async () => {
               style={{
                 display: 'block',
                 color: '#ff0066',
-                fontSize: '0.85rem',
+                fontSize: isMobile ? '0.75rem' : '0.85rem',
                 marginTop: '8px'
               }}
             >
@@ -364,18 +356,17 @@ const sendEmails = async () => {
           )}
         </div>
 
-        {/* Submit Button */}
         <motion.button
           type="submit"
           disabled={isSubmitting}
-          whileHover={{ scale: isSubmitting ? 1 : 1.05 }}
+          whileHover={{ scale: isSubmitting || isMobile ? 1 : 1.05 }}
           whileTap={{ scale: isSubmitting ? 1 : 0.95 }}
-          onMouseEnter={() => !isSubmitting && audioManager.play('hover')}
+          onMouseEnter={() => !isSubmitting && !isMobile && audioManager.play('hover')}
           className="neon-button"
           style={{
             width: '100%',
-            padding: '18px',
-            fontSize: '1.3rem',
+            padding: isMobile ? '15px' : '18px',
+            fontSize: isMobile ? '1.1rem' : '1.3rem',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -392,48 +383,45 @@ const sendEmails = async () => {
               >
                 🔐
               </motion.span>
-              Encrypting & Sending...
+              {isMobile ? 'Sending...' : 'Encrypting & Sending...'}
             </>
           ) : (
             <>
               <span>🔒</span>
-              Send Secure Message
+              {isMobile ? 'Send Message' : 'Send Secure Message'}
             </>
           )}
         </motion.button>
 
-        {/* Character Count */}
         <div style={{
           marginTop: '15px',
           textAlign: 'center',
-          fontSize: '0.85rem',
+          fontSize: isMobile ? '0.75rem' : '0.85rem',
           color: 'var(--text-tertiary)'
         }}>
           {formData.message.length} / 1000 characters
         </div>
 
-        {/* Security Info */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
           style={{
             marginTop: '20px',
-            padding: '15px',
+            padding: isMobile ? '12px' : '15px',
             background: 'rgba(0, 243, 255, 0.05)',
             border: '1px solid rgba(0, 243, 255, 0.2)',
             borderRadius: '8px',
-            fontSize: '0.85rem',
+            fontSize: isMobile ? '0.75rem' : '0.85rem',
             color: 'var(--text-secondary)',
             lineHeight: '1.6'
           }}
         >
           <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
-            <span style={{ fontSize: '1.2rem' }}>🛡️</span>
+            <span style={{ fontSize: isMobile ? '1rem' : '1.2rem', flexShrink: 0 }}>🛡️</span>
             <div>
               <strong style={{ color: 'var(--text-primary)' }}>Your Privacy Matters:</strong> 
-              {' '}All data is encrypted using AES-256 encryption before transmission and sent through a secure HTTPS tunnel. 
-              We never store sensitive information in plaintext and follow industry-standard security practices.
+              {' '}All data is encrypted using AES-256 encryption before transmission.
             </div>
           </div>
         </motion.div>
@@ -442,18 +430,18 @@ const sendEmails = async () => {
   );
 };
 
-const FormField = ({ label, name, type, value, onChange, error, placeholder, icon }) => (
-  <div style={{ marginBottom: '25px' }}>
+const FormField = ({ label, name, type, value, onChange, error, placeholder, icon, isMobile }) => (
+  <div style={{ marginBottom: isMobile ? '20px' : '25px' }}>
     <label style={{
       display: 'flex',
       alignItems: 'center',
       gap: '10px',
       color: 'var(--text-primary)',
-      fontSize: '1rem',
+      fontSize: isMobile ? '0.9rem' : '1rem',
       marginBottom: '10px',
       fontWeight: '600'
     }}>
-      <span style={{ fontSize: '1.2rem' }}>{icon}</span>
+      <span style={{ fontSize: isMobile ? '1rem' : '1.2rem' }}>{icon}</span>
       {label}
     </label>
     <input
@@ -461,16 +449,16 @@ const FormField = ({ label, name, type, value, onChange, error, placeholder, ico
       name={name}
       value={value}
       onChange={onChange}
-      onFocus={() => audioManager.play('hover')}
+      onFocus={() => !isMobile && audioManager.play('hover')}
       placeholder={placeholder}
       style={{
         width: '100%',
-        padding: '15px',
+        padding: isMobile ? '12px' : '15px',
         background: 'rgba(0, 0, 0, 0.5)',
         border: `2px solid ${error ? '#ff0066' : 'rgba(0, 243, 255, 0.3)'}`,
         borderRadius: '8px',
         color: 'var(--text-primary)',
-        fontSize: '1rem',
+        fontSize: isMobile ? '0.9rem' : '1rem',
         outline: 'none',
         transition: 'all 0.3s'
       }}
@@ -482,7 +470,7 @@ const FormField = ({ label, name, type, value, onChange, error, placeholder, ico
         style={{
           display: 'block',
           color: '#ff0066',
-          fontSize: '0.85rem',
+          fontSize: isMobile ? '0.75rem' : '0.85rem',
           marginTop: '8px'
         }}
       >

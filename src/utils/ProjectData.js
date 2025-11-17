@@ -19,18 +19,18 @@ export const projectsData = [
       'Skill unlock animations',
       'Dynamic background music system',
       'Real-time sound effects'
-    ],
-    impact: {
+    ], impact: {
       metric: 'User Engagement',
-      value: '400%',
-      description: 'increase in average session time'
+      value: 'Designed for High Engagement',
+      description: 'crafted to keep visitors exploring longer'
     },
+
     githubUrl: '#',
     liveUrl: '#',
     unlockDelay: 0
   },
   {
-    id: 'project-2',
+    id: 'project-5',
     title: 'E-Commerce Platform',
     category: 'Full Stack',
     difficulty: 'EPIC',
@@ -49,102 +49,75 @@ export const projectsData = [
       'Email notification system'
     ],
     impact: {
-      metric: 'Revenue',
-      value: '$50K+',
-      description: 'processed in first month'
+      metric: 'Accessablity',
+      value: 'Store Management',
+      description: 'easy management of store data'
     },
     githubUrl: '#',
     liveUrl: '#',
     unlockDelay: 800
   },
   {
-    id: 'project-3',
-    title: 'AI Content Generator',
-    category: 'Machine Learning',
-    difficulty: 'EPIC',
+    id: 'project-4',
+    title: 'Custom PC Builder Store',
+    category: 'E-Commerce',
+    difficulty: 'HARD',
     status: 'completed',
-    xpReward: 130,
-    thumbnail: '🤖',
-    description: 'An AI-powered tool that generates marketing content, blog posts, and social media captions.',
-    challenge: 'Fine-tuning language models for brand-specific tone while maintaining coherence.',
-    solution: 'Fine-tuned GPT models with custom training data and implemented context-aware prompt engineering.',
-    technologies: ['Python', 'OpenAI API', 'FastAPI', 'React', 'TensorFlow'],
+    xpReward: 100,
+    thumbnail: '🖥️',
+    description: 'An e-commerce platform that lets users customize their own PC by selecting compatible components and placing orders instantly.',
+    challenge: 'Managing component compatibility, dynamic pricing, and real-time stock updates across thousands of products.',
+    solution: 'Developed a compatibility engine with live validation, integrated Stripe for payments, and automated inventory sync using webhooks.',
+    technologies: ['React', 'Node.js', 'Express', 'MongoDB', 'Stripe', 'Redis'],
     features: [
-      'Multi-format content generation',
-      'Brand voice customization',
-      'SEO optimization suggestions',
-      'Content scheduling',
-      'Performance analytics'
+      'PC component compatibility checker',
+      'Real-time price and stock updates',
+      'Custom build preview',
+      'Secure payment gateway',
+      'Order tracking dashboard'
     ],
     impact: {
-      metric: 'Content Creation',
-      value: '10x',
-      description: 'faster than manual writing'
+      metric: 'Builds',
+      value: 'Fully Functional',
+      description: 'supports custom PC configurations end to end'
     },
     githubUrl: '#',
     liveUrl: '#',
-    unlockDelay: 1600
+    unlockDelay: 3200
   },
   {
-  id: 'project-4',
-  title: 'Custom PC Builder Store',
-  category: 'E-Commerce',
-  difficulty: 'HARD',
-  status: 'completed',
-  xpReward: 100,
-  thumbnail: '🖥️',
-  description: 'An e-commerce platform that lets users customize their own PC by selecting compatible components and placing orders instantly.',
-  challenge: 'Managing component compatibility, dynamic pricing, and real-time stock updates across thousands of products.',
-  solution: 'Developed a compatibility engine with live validation, integrated Stripe for payments, and automated inventory sync using webhooks.',
-  technologies: ['React', 'Node.js', 'Express', 'MongoDB', 'Stripe', 'Redis'],
-  features: [
-    'PC component compatibility checker',
-    'Real-time price and stock updates',
-    'Custom build preview',
-    'Secure payment gateway',
-    'Order tracking dashboard'
-  ],
-  impact: {
-    metric: 'Builds',
-    value: '10K+',
-    description: 'custom PCs configured by users'
+    id: 'project-2',
+    title: 'LocalLens – Emotional Travel Discovery',
+    category: 'Mobile App',
+    difficulty: 'EPIC',
+    status: 'completed',
+    xpReward: 120,
+    thumbnail: '📍',
+    description: 'An emotion-driven travel journaling app that lets users share local stories through videos, audio pins, and multilingual captions.',
+    challenge: 'Building seamless real-time journey updates and emotion-based content suggestions across different regions and languages.',
+    solution: 'Integrated Supabase for data sync, AssemblyAI + Translate API for real-time transcription & translation, and emotion tagging using sentiment analysis.',
+    technologies: ['Flutter', 'Supabase', 'Node.js', , 'AssemblyAI', 'Google Translate API'],
+    features: [
+      'Emotion-based journey discovery',
+      'Audio & video pins with multilingual captions',
+      'Interactive map journeys',
+      'Gamified experience with XP & leaderboards',
+      'Offline caching & instant sync'
+    ],
+    impact: {
+      metric: 'Journeys',
+      value: 'Prototype Ready',
+      description: 'designed to support thousands of shared journeys'
+    }
+    ,
+    githubUrl: '#',
+    liveUrl: '#',
+    unlockDelay: 3200
   },
-  githubUrl: '#',
-  liveUrl: '#',
-  unlockDelay: 3200
-},
-  {
-  id: 'project-5',
-  title: 'LocalLens – Emotional Travel Discovery',
-  category: 'Mobile & Web App',
-  difficulty: 'EPIC',
-  status: 'completed',
-  xpReward: 120,
-  thumbnail: '📍',
-  description: 'An emotion-driven travel journaling app that lets users share local stories through videos, audio pins, and multilingual captions.',
-  challenge: 'Building seamless real-time journey updates and emotion-based content suggestions across different regions and languages.',
-  solution: 'Integrated Supabase for data sync, AssemblyAI + Translate API for real-time transcription & translation, and emotion tagging using sentiment analysis.',
-  technologies: ['React Native', 'Supabase', 'Node.js', 'Firebase (legacy)', 'AssemblyAI', 'Google Translate API'],
-  features: [
-    'Emotion-based journey discovery',
-    'Audio & video pins with multilingual captions',
-    'Interactive map journeys',
-    'Gamified experience with XP & leaderboards',
-    'Offline caching & instant sync'
-  ],
-  impact: {
-    metric: 'Journeys',
-    value: '50K+',
-    description: 'shared by explorers worldwide'
-  },
-  githubUrl: '#',
-  liveUrl: '#',
-  unlockDelay: 3200
-},
   {
     id: 'project-6',
     title: 'AI Fitness Tracker',
-    category: 'Web Development',
+    category: 'Web and App Development',
     difficulty: 'RARE',
     status: 'completed',
     xpReward: 85,
@@ -158,13 +131,13 @@ export const projectsData = [
       'Nutrition tracking',
       'Progress charts',
       'Social challenges',
-      'Wearable integration'
     ],
     impact: {
       metric: 'IMPACT',
-      value: 'INCRESE IN ENGAGGIG WORKOUT',
-      description: 'across WEB & APP'
-    },
+      value: 'Improved Engagement',
+      description: 'aimed at making workouts more interactive'
+    }
+    ,
     githubUrl: '#',
     liveUrl: '#',
     unlockDelay: 5000

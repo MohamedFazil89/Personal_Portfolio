@@ -1,29 +1,24 @@
-// components/chapters/Prologue.jsx
+// components/chapters/Prologue.jsx - FULLY RESPONSIVE VERSION
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import useGameStore from '../../store/gameStore';
 import audioManager from '../../utils/audioManager';
-
+import { useResponsive } from '../../utils/responsiveUtils';
 
 const Prologue = () => {
   const [phase, setPhase] = useState(0);
   const [loadingStep, setLoadingStep] = useState(0);
   const { setCurrentChapter, completeChapter } = useGameStore();
   const [showDialogue, setShowDialogue] = useState(false);
+  const { isMobile, isTablet, isSmallMobile } = useResponsive();
 
-  // 
-
-  // 
   useEffect(() => {
-    // Initialize audio on component mount
     audioManager.init();
 
-    // Start prologue music with fade in
     setTimeout(() => {
       audioManager.playMusic('prologue', 3000);
     }, 500);
 
-    // Sequential loading text with SFX
     const loadingTimers = [
       setTimeout(() => {
         setLoadingStep(1);
@@ -39,7 +34,6 @@ const Prologue = () => {
       }, 4000),
     ];
 
-    // Phase timing
     const phaseTimers = [
       setTimeout(() => setPhase(1), 1000),
       setTimeout(() => {
@@ -59,13 +53,9 @@ const Prologue = () => {
   }, []);
 
   const handleStartJourney = () => {
-    // Play transition sound
     audioManager.playSFX('questComplete');
-
-    // Complete chapter and move to next
     completeChapter('prologue');
 
-    // Transition to Origin chapter with music crossfade
     setTimeout(() => {
       audioManager.playMusic('origin', 2000);
       setCurrentChapter('origin');
@@ -73,11 +63,16 @@ const Prologue = () => {
   };
 
   const handleButtonHover = () => {
-    audioManager.playSFX('uiHover');
+    if (!isMobile) {
+      audioManager.playSFX('uiHover');
+    }
   };
 
   return (
-    <div className="chapter-container" style={{ position: 'relative' }}>
+    <div className="chapter-container" style={{ 
+      position: 'relative',
+      padding: isMobile ? '20px 15px' : '0'
+    }}>
       {/* Background Grid */}
       <div className="grid-bg" />
 
@@ -94,20 +89,27 @@ const Prologue = () => {
           style={{ textAlign: 'center', zIndex: 2 }}
         >
           <h1
-            className="glitch neon-text "
+            className="glitch neon-text"
             data-text="INITIALIZING..."
-            style={{ fontSize: '4rem', marginBottom: '2rem' }}
+            style={{ 
+              fontSize: isMobile ? '2.5rem' : isTablet ? '3rem' : '4rem',
+              marginBottom: isMobile ? '1.5rem' : '2rem'
+            }}
           >
             INITIALIZING...
           </h1>
-          <div style={{ fontSize: '1rem', minHeight: '0px' }}>
+          <div style={{ fontSize: isMobile ? '0.85rem' : '1rem', minHeight: '0px' }}>
             {loadingStep === 1 && (
               <motion.p
                 initial={{ opacity: 0, x: -20, y: -30 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 20 }}
                 transition={{ duration: 0.5 }}
-                style={{ color: 'var(--text-secondary)', marginBottom: '1px' }}
+                style={{ 
+                  color: 'var(--text-secondary)', 
+                  marginBottom: '1px',
+                  fontSize: isMobile ? '0.85rem' : '1rem'
+                }}
               >
                 &gt; Loading user profile...
               </motion.p>
@@ -118,7 +120,11 @@ const Prologue = () => {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 20 }}
                 transition={{ duration: 0.5 }}
-                style={{ color: 'var(--text-secondary)', marginBottom: '1px' }}
+                style={{ 
+                  color: 'var(--text-secondary)', 
+                  marginBottom: '1px',
+                  fontSize: isMobile ? '0.85rem' : '1rem'
+                }}
               >
                 &gt; Establishing connection...
               </motion.p>
@@ -128,7 +134,10 @@ const Prologue = () => {
                 initial={{ opacity: 0, x: -20, y: -30 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.5 }}
-                style={{ color: 'var(--neon-primary)' }}
+                style={{ 
+                  color: 'var(--neon-primary)',
+                  fontSize: isMobile ? '0.85rem' : '1rem'
+                }}
               >
                 &gt; Welcome to the Grid.
               </motion.p>
@@ -145,16 +154,13 @@ const Prologue = () => {
           transition={{ duration: 1.5, delay: 0.5 }}
           style={{
             position: 'absolute',
-            width: '350px',
-            height: '350px',
+            width: isMobile ? '250px' : isTablet ? '300px' : '350px',
+            height: isMobile ? '250px' : isTablet ? '300px' : '350px',
             overflow: 'hidden',
-            // border: '3px solid var(--neon-blue)',
-            // boxShadow: '0 0 50px var(--neon-blue), inset 0 0 30px rgba(0, 243, 255, 0.2)',
             zIndex: 3,
             clipPath: 'polygon(0 0, 100% 0, 100% 85%, 85% 100%, 0 100%)'
           }}
         >
-          {/* Avatar Image */}
           <img
             src="/assets/avatar.png"
             alt="Fazil Avatar"
@@ -173,19 +179,19 @@ const Prologue = () => {
       {phase >= 3 && (
         <motion.div
           initial={{ width: "0%", opacity: 0 }}
-          animate={{ width: "80%", opacity: 1 }}
+          animate={{ width: isMobile ? "95%" : isTablet ? "85%" : "80%", opacity: 1 }}
           transition={{ duration: 1.5, ease: "easeInOut" }}
-          onAnimationComplete={() => setShowDialogue(true)} // <--- important
+          onAnimationComplete={() => setShowDialogue(true)}
           style={{
             position: "absolute",
-            bottom: "100px",
-            width: "80%",
-            height: "40%",
-            maxHeight: "400px",
-            maxWidth: "800px",
+            bottom: isMobile ? "80px" : "100px",
+            width: isMobile ? "95%" : isTablet ? "85%" : "80%",
+            height: isMobile ? "auto" : "40%",
+            maxHeight: isMobile ? "none" : "400px",
+            maxWidth: isMobile ? "none" : "800px",
             background: "rgba(10, 14, 39, 0.95)",
             border: "2px solid var(--neon-blue)",
-            padding: "30px",
+            padding: isMobile ? "20px" : isTablet ? "25px" : "30px",
             boxShadow: "0 0 30px rgba(0, 243, 255, 0.3)",
             zIndex: 4,
             overflow: "hidden",
@@ -198,22 +204,21 @@ const Prologue = () => {
               transition={{ duration: 0.8 }}
             >
               <p className="message" style={{
-                fontSize: "1.3rem",
-                marginBottom: "20px",
+                fontSize: isMobile ? "1rem" : isTablet ? "1.15rem" : "1.3rem",
+                marginBottom: isMobile ? "15px" : "20px",
                 color: "var(--text-primary)",
+                lineHeight: "1.6"
               }}>
                 <span style={{ color: "var(--neon-blue)" }}>[Fazil]:</span>{" "}
                 Welcome, traveler. You've entered my domain — a world built from code,
                 creativity, and countless late nights.
               </p>
 
-              <p
-                style={{
-                  fontSize: "1.1rem",
-                  marginBottom: "30px",
-                  color: "var(--text-secondary)",
-                }}
-              >
+              <p style={{
+                fontSize: isMobile ? "0.95rem" : isTablet ? "1rem" : "1.1rem",
+                marginBottom: isMobile ? "20px" : "30px",
+                color: "var(--text-secondary)",
+              }}>
                 Ready to explore what I've built? Each chapter reveals a piece of the
                 journey.
               </p>
@@ -225,6 +230,11 @@ const Prologue = () => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.3 }}
+                style={{
+                  width: isMobile ? '100%' : 'auto',
+                  padding: isMobile ? '12px 24px' : '15px 30px',
+                  fontSize: isMobile ? '1rem' : '1.2rem'
+                }}
               >
                 Start Journey
               </motion.button>

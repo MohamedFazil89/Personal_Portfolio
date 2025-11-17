@@ -15,12 +15,15 @@ import {
 import audioManager from '../../utils/audioManager';
 
 import AboutModal from '../ui/AboutModal';
+import { useResponsive, responsiveStyles } from '../../utils/responsiveUtils';
 
 
 const Vision = ({ gridEnabled = true }) => {
     const [phase, setPhase] = useState(0);
     const { completeChapter, setCurrentChapter } = useGameStore();
     const [showAboutModal, setShowAboutModal] = useState(false);
+    const { isMobile, isTablet } = useResponsive();
+
 
 
     useEffect(() => {
@@ -55,9 +58,10 @@ const Vision = ({ gridEnabled = true }) => {
     return (
         <div className="chapter-container" style={{
             minHeight: '100vh',
-            padding: '80px 20px',
+            padding: isMobile ? '30px 5px' : isTablet ? '60px 12px' : '80px 20px',
             position: 'relative'
         }}>
+
             {/* Background effects */}
             {gridEnabled && <div className="grid-bg" />}
             <div className="scanlines" />
@@ -167,12 +171,11 @@ const Vision = ({ gridEnabled = true }) => {
                                 What I'm learning right now
                             </p>
                         </motion.div>
-
                         <div style={{
                             display: 'grid',
-                            gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
-                            gap: '30px',
-                            marginBottom: '80px'
+                            gridTemplateColumns: isMobile ? '1fr' : isTablet ? 'repeat(auto-fit, minmax(220px, 1fr))' : 'repeat(auto-fit, minmax(350px, 1fr))',
+                            gap: isMobile ? '14px' : isTablet ? '20px' : '30px',
+                            marginBottom: isMobile ? '40px' : '80px'
                         }}>
                             {currentFocus.map((focus, index) => (
                                 <FocusCard key={focus.id} focus={focus} index={index} />
@@ -209,9 +212,9 @@ const Vision = ({ gridEnabled = true }) => {
 
                         <div style={{
                             display: 'grid',
-                            gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
-                            gap: '30px',
-                            marginBottom: '80px'
+                            gridTemplateColumns: isMobile ? '1fr' : isTablet ? 'repeat(auto-fit, minmax(220px, 1fr))' : 'repeat(auto-fit, minmax(350px, 1fr))',
+                            gap: isMobile ? '14px' : isTablet ? '20px' : '30px',
+                            marginBottom: isMobile ? '40px' : '80px'
                         }}>
                             {dreamProjects.map((dream, index) => (
                                 <DreamCard key={dream.id} dream={dream} index={index} />
@@ -242,19 +245,17 @@ const Vision = ({ gridEnabled = true }) => {
                                 Know About Me
                             </h2>
                         </motion.div>
-
                         <div style={{
                             display: 'grid',
-                            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-                            gap: '20px',
-                            marginBottom: '80px'
-
-                        }}  onClick={() => setShowAboutModal(true)}>
+                            gridTemplateColumns: isMobile ? '1fr' : isTablet ? 'repeat(auto-fit, minmax(220px, 1fr))' : 'repeat(auto-fit, minmax(350px, 1fr))',
+                            gap: isMobile ? '14px' : isTablet ? '20px' : '30px',
+                            marginBottom: isMobile ? '40px' : '80px'
+                        }} onClick={() => setShowAboutModal(true)}>
                             {learningGoals.map((goal, index) => (
                                 <LearningGoalCard key={index} goal={goal} index={index} />
                             ))}
                         </div>
-                {showAboutModal && <AboutModal onClose={() => setShowAboutModal(false)} />}
+                        {showAboutModal && <AboutModal onClose={() => setShowAboutModal(false)} />}
 
                     </>
                 )}
@@ -285,89 +286,88 @@ const Vision = ({ gridEnabled = true }) => {
                                 Let's create something amazing together
                             </p>
                         </motion.div>
-
                         <div style={{
                             display: 'grid',
-                            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-                            gap: '25px',
-                            marginBottom: '60px'
-                            
+                            gridTemplateColumns: isMobile ? '1fr' : isTablet ? 'repeat(auto-fit, minmax(220px, 1fr))' : 'repeat(auto-fit, minmax(350px, 1fr))',
+                            gap: isMobile ? '14px' : isTablet ? '20px' : '30px',
+                            marginBottom: isMobile ? '40px' : '80px'
                         }}>
-                            {collaborationInterests.map((collab, index) => (
-                                <CollaborationCard key={index} collab={collab} index={index} />
-                            ))}
-                        </div>
-                    </>
+
+                        {collaborationInterests.map((collab, index) => (
+                            <CollaborationCard key={index} collab={collab} index={index} />
+                        ))}
+                    </div>
+            </>
                 )}
 
-                {/* Personal Motto */}
-                {phase >= 6 && (
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 1, delay: 0.5 }}
-                        style={{
-                            padding: '50px',
-                            background: 'linear-gradient(135deg, rgba(0, 243, 255, 0.1), rgba(176, 0, 255, 0.1))',
-                            border: '3px solid var(--neon-blue)',
-                            borderRadius: '15px',
-                            textAlign: 'center',
-                            marginBottom: '60px',
-                            boxShadow: '0 0 40px rgba(0, 243, 255, 0.3)'
-                        }}
-                    >
-                        <div style={{
-                            fontSize: '2rem',
-                            marginBottom: '20px'
-                        }}>
-                            ⭐
-                        </div>
-                        <p style={{
-                            fontSize: '1.8rem',
-                            color: 'var(--text-primary)',
-                            fontStyle: 'italic',
-                            lineHeight: '1.8',
-                            marginBottom: '20px',
-                            fontWeight: '300'
-                        }}>
-                            "{personalMotto.text}"
-                        </p>
-                        <p style={{
-                            fontSize: '1.1rem',
-                            color: 'var(--neon-blue)',
-                            fontWeight: '600'
-                        }}>
-                            — {personalMotto.author}
-                        </p>
-                    </motion.div>
-                )}
+            {/* Personal Motto */}
+            {phase >= 6 && (
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 1, delay: 0.5 }}
+                    style={{
+                        padding: '50px',
+                        background: 'linear-gradient(135deg, rgba(0, 243, 255, 0.1), rgba(176, 0, 255, 0.1))',
+                        border: '3px solid var(--neon-blue)',
+                        borderRadius: '15px',
+                        textAlign: 'center',
+                        marginBottom: '60px',
+                        boxShadow: '0 0 40px rgba(0, 243, 255, 0.3)'
+                    }}
+                >
+                    <div style={{
+                        fontSize: '2rem',
+                        marginBottom: '20px'
+                    }}>
+                        ⭐
+                    </div>
+                    <p style={{
+                        fontSize: '1.8rem',
+                        color: 'var(--text-primary)',
+                        fontStyle: 'italic',
+                        lineHeight: '1.8',
+                        marginBottom: '20px',
+                        fontWeight: '300'
+                    }}>
+                        "{personalMotto.text}"
+                    </p>
+                    <p style={{
+                        fontSize: '1.1rem',
+                        color: 'var(--neon-blue)',
+                        fontWeight: '600'
+                    }}>
+                        — {personalMotto.author}
+                    </p>
+                </motion.div>
+            )}
 
-                {/* Continue Button */}
-                {phase >= 6 && (
-                    <motion.div
-                        initial={{ opacity: 0, y: 50 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.8, delay: 1 }}
-                        style={{ textAlign: 'center', marginTop: '60px' }}
+            {/* Continue Button */}
+            {phase >= 6 && (
+                <motion.div
+                    initial={{ opacity: 0, y: 50 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, delay: 1 }}
+                    style={{ textAlign: 'center', marginTop: '60px' }}
+                >
+                    <p style={{
+                        color: 'var(--text-secondary)',
+                        marginBottom: '20px',
+                        fontSize: '1.1rem'
+                    }}>
+                        Ready to connect?
+                    </p>
+                    <button
+                        className="neon-button"
+                        onClick={handleContinue}
+                        onMouseEnter={() => audioManager.play('hover')}
                     >
-                        <p style={{
-                            color: 'var(--text-secondary)',
-                            marginBottom: '20px',
-                            fontSize: '1.1rem'
-                        }}>
-                            Ready to connect?
-                        </p>
-                        <button
-                            className="neon-button"
-                            onClick={handleContinue}
-                            onMouseEnter={() => audioManager.play('hover')}
-                        >
-                            &gt; Continue to Connection
-                        </button>
-                    </motion.div>
-                )}
-            </div>
+                        &gt; Continue to Connection
+                    </button>
+                </motion.div>
+            )}
         </div>
+        </div >
     );
 };
 

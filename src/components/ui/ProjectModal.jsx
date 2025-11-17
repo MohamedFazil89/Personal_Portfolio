@@ -1,10 +1,4 @@
-
-// RESPONSIVE FIXES - Copy these updates to your project
-
-// ============================================
-// 1. UPDATE ProjectModal.jsx
-// ============================================
-
+// components/ui/ProjectModal.jsx - FULLY RESPONSIVE VERSION
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { difficultyConfig } from '../../utils/ProjectData';
@@ -18,7 +12,7 @@ const ProjectModal = ({ project, onClose, initialTab = 'overview' }) => {
   const { unlockSkill } = useGameStore();
   const diffConfig = difficultyConfig[project.difficulty] || DEFAULT_DIFF;
   const [activeTab, setActiveTab] = useState(initialTab);
-  const { isMobile, isSmallMobile } = useResponsive();
+  const { isMobile, isTablet, isSmallMobile } = useResponsive();
 
   useEffect(() => {
     audioManager.play('success');
@@ -71,7 +65,7 @@ const ProjectModal = ({ project, onClose, initialTab = 'overview' }) => {
             background: 'rgba(10, 14, 39, 0.95)',
             border: `3px solid ${diffConfig.color}`,
             borderRadius: isMobile ? '10px' : '15px',
-            padding: isMobile ? '20px' : '40px',
+            padding: isMobile ? '20px' : isTablet ? '30px' : '40px',
             boxShadow: diffConfig.glow,
             position: 'relative',
             maxHeight: isMobile ? 'none' : '90vh',
@@ -106,7 +100,7 @@ const ProjectModal = ({ project, onClose, initialTab = 'overview' }) => {
           </button>
 
           {/* Header */}
-          <div style={{ marginBottom: isMobile ? '20px' : '30px', paddingRight: isMobile ? '30px' : '0' }}>
+          <div style={{ marginBottom: isMobile ? '20px' : '30px', paddingRight: isMobile ? '40px' : '0' }}>
             <div style={{
               display: 'flex',
               flexDirection: isMobile ? 'column' : 'row',
@@ -133,11 +127,12 @@ const ProjectModal = ({ project, onClose, initialTab = 'overview' }) => {
                   {project.difficulty} QUEST
                 </div>
                 <h2 style={{
-                  fontSize: isMobile ? '1.5rem' : '2.5rem',
+                  fontSize: isMobile ? '1.5rem' : isTablet ? '2rem' : '2.5rem',
                   color: 'var(--text-primary)',
                   marginBottom: '10px',
                   fontWeight: '900',
-                  lineHeight: '1.2'
+                  lineHeight: '1.2',
+                  wordBreak: 'break-word'
                 }}>
                   {project.title}
                 </h2>
@@ -156,7 +151,7 @@ const ProjectModal = ({ project, onClose, initialTab = 'overview' }) => {
             </div>
 
             <p style={{
-              fontSize: isMobile ? '1rem' : '1.2rem',
+              fontSize: isMobile ? '1rem' : isTablet ? '1.1rem' : '1.2rem',
               color: 'var(--text-secondary)',
               lineHeight: '1.8'
             }}>
@@ -384,7 +379,7 @@ const ProjectModal = ({ project, onClose, initialTab = 'overview' }) => {
               </div>
             </div>
           ) : (
-            <NetshellDemo project={project} diffConfig={diffConfig} isMobile={isMobile} />
+            <NetshellDemo project={project} diffConfig={diffConfig} isMobile={isMobile} isTablet={isTablet} />
           )}
 
           {/* XP Earned */}
@@ -478,7 +473,7 @@ const TabButton = ({ label, active, onClick, isMobile }) => (
   </button>
 );
 
-const NetshellDemo = ({ project, diffConfig, isMobile }) => {
+const NetshellDemo = ({ project, diffConfig, isMobile, isTablet }) => {
   const [terminalOutput, setTerminalOutput] = useState([
     { type: 'system', text: `> Initializing ${project.title} demo environment...` },
     { type: 'success', text: '> System ready. Type "help" for available commands.' }
@@ -635,7 +630,8 @@ Status: Completed ✓`
           marginLeft: isMobile ? '10px' : '15px',
           color: diffConfig.color,
           fontSize: isMobile ? '0.75rem' : '0.9rem',
-          fontWeight: '700'
+          fontWeight: '700',
+          wordBreak: 'break-word'
         }}>
           NetShell v2.0 - {project.title}
         </span>
@@ -665,7 +661,8 @@ Status: Completed ✓`
                           diffConfig.color,
               whiteSpace: 'pre-wrap',
               fontSize: isMobile ? '0.8rem' : '0.95rem',
-              lineHeight: '1.6'
+              lineHeight: '1.6',
+              wordBreak: 'break-word'
             }}
           >
             {line.text}

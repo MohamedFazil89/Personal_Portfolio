@@ -1,8 +1,11 @@
-// components/ui/SocialCard.jsx
+// components/ui/SocialCard.jsx - FULLY RESPONSIVE VERSION
 import { motion } from 'framer-motion';
 import audioManager from '../../utils/audioManager';
+import { useResponsive } from '../../utils/responsiveUtils';
 
 const SocialCard = ({ social, index }) => {
+  const { isMobile, isSmallMobile } = useResponsive();
+  
   const handleClick = () => {
     audioManager.play('powerUp');
     window.open(social.url, '_blank', 'noopener,noreferrer');
@@ -18,15 +21,15 @@ const SocialCard = ({ social, index }) => {
         ease: [0.4, 0, 0.2, 1]
       }}
       whileHover={{ 
-        scale: 1.05,
+        scale: isMobile ? 1 : 1.05,
         boxShadow: `0 0 40px ${social.color}80`
       }}
       onClick={handleClick}
-      onHoverStart={() => audioManager.play('hover')}
+      onHoverStart={() => !isMobile && audioManager.play('hover')}
       style={{
         background: 'rgba(10, 14, 39, 0.8)',
         border: `2px solid ${social.color}40`,
-        padding: '30px',
+        padding: isMobile ? '20px' : '30px',
         cursor: 'pointer',
         backdropFilter: 'blur(10px)',
         transition: 'all 0.3s ease',
@@ -49,8 +52,8 @@ const SocialCard = ({ social, index }) => {
       <div style={{ position: 'relative', zIndex: 1 }}>
         {/* Icon */}
         <div style={{
-          fontSize: '4rem',
-          marginBottom: '20px',
+          fontSize: isMobile ? '3rem' : '4rem',
+          marginBottom: isMobile ? '15px' : '20px',
           textAlign: 'center',
           filter: 'brightness(1.2)'
         }}>
@@ -59,7 +62,7 @@ const SocialCard = ({ social, index }) => {
 
         {/* Platform Name */}
         <h4 style={{
-          fontSize: '1.8rem',
+          fontSize: isMobile ? '1.4rem' : '1.8rem',
           color: social.color,
           textAlign: 'center',
           marginBottom: '10px',
@@ -79,18 +82,23 @@ const SocialCard = ({ social, index }) => {
             background: `${social.color}20`,
             border: `1px solid ${social.color}60`,
             borderRadius: '20px',
-            fontSize: '0.9rem',
+            fontSize: isMobile ? '0.8rem' : '0.9rem',
             color: social.color,
-            fontWeight: '600'
+            fontWeight: '600',
+            display: 'inline-block',
+            wordBreak: 'break-all'
           }}>
-            {social.username}
+            {isSmallMobile && social.username.length > 20 
+              ? social.username.substring(0, 20) + '...' 
+              : social.username
+            }
           </span>
         </div>
 
         {/* Description */}
         <p style={{
           color: 'var(--text-secondary)',
-          fontSize: '0.95rem',
+          fontSize: isMobile ? '0.85rem' : '0.95rem',
           textAlign: 'center',
           marginBottom: '15px',
           lineHeight: '1.5'
@@ -101,13 +109,13 @@ const SocialCard = ({ social, index }) => {
         {/* Stats */}
         <div style={{
           textAlign: 'center',
-          padding: '12px',
+          padding: isMobile ? '10px' : '12px',
           background: 'rgba(0, 0, 0, 0.5)',
           border: '1px solid rgba(255, 255, 255, 0.1)',
           borderRadius: '8px'
         }}>
           <div style={{
-            fontSize: '0.8rem',
+            fontSize: isMobile ? '0.7rem' : '0.8rem',
             color: 'var(--text-tertiary)',
             marginBottom: '5px',
             textTransform: 'uppercase',
@@ -116,7 +124,7 @@ const SocialCard = ({ social, index }) => {
             Activity
           </div>
           <div style={{
-            fontSize: '1.1rem',
+            fontSize: isMobile ? '0.95rem' : '1.1rem',
             color: social.color,
             fontWeight: '700'
           }}>
@@ -125,19 +133,21 @@ const SocialCard = ({ social, index }) => {
         </div>
 
         {/* Hover Arrow */}
-        <motion.div
-          initial={{ x: -10, opacity: 0 }}
-          whileHover={{ x: 0, opacity: 1 }}
-          style={{
-            position: 'absolute',
-            bottom: '15px',
-            right: '15px',
-            fontSize: '1.5rem',
-            color: social.color
-          }}
-        >
-          →
-        </motion.div>
+        {!isMobile && (
+          <motion.div
+            initial={{ x: -10, opacity: 0 }}
+            whileHover={{ x: 0, opacity: 1 }}
+            style={{
+              position: 'absolute',
+              bottom: '15px',
+              right: '15px',
+              fontSize: '1.5rem',
+              color: social.color
+            }}
+          >
+            →
+          </motion.div>
+        )}
       </div>
     </motion.div>
   );
