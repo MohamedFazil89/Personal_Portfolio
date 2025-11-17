@@ -219,7 +219,7 @@ const Trials = ({ gridEnabled = true }) => {
                 )}
 
                 {/* Continue Button */}
-                {completedProjects.length >= 3 && (
+                {completedProjects.length >= 3 ? (
                     <motion.div
                         initial={{ opacity: 0, y: 50 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -239,6 +239,29 @@ const Trials = ({ gridEnabled = true }) => {
                             onMouseEnter={() => audioManager.play('hover')}
                         >
                             &gt; Continue to Vision
+                        </button>
+                    </motion.div>
+                ) : (
+                    <motion.div
+                        initial={{ opacity: 0, y: 50 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.8 }}
+                        style={{ textAlign: 'center', marginTop: '60px' }}
+                    >
+                        <p style={{
+                            color: 'var(--text-secondary)',
+                            marginBottom: '20px',
+                            fontSize: '1.1rem'
+                        }}>
+                            You have to explore atleast 3 projects to unlock Vision
+                        </p>
+                        <button
+                            className="neon-button"
+                            onClick={handleContinue}
+                            style={{ color:"white", borderColor:"red", backgroundColor:"red"}}
+                            onMouseEnter={() => audioManager.play('hover')}
+                        >
+                            &gt; <strike>Continue to Vision</strike>
                         </button>
                     </motion.div>
                 )}

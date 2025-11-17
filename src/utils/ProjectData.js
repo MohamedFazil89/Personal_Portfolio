@@ -29,34 +29,7 @@ export const projectsData = [
     liveUrl: '#',
     unlockDelay: 0
   },
-  {
-    id: 'project-5',
-    title: 'E-Commerce Platform',
-    category: 'Full Stack',
-    difficulty: 'EPIC',
-    status: 'completed',
-    xpReward: 120,
-    thumbnail: '🛒',
-    description: 'A modern e-commerce platform with real-time inventory, payment integration, and admin dashboard.',
-    challenge: 'Handling concurrent transactions and maintaining data consistency across multiple user sessions.',
-    solution: 'Implemented Redis caching, PostgreSQL with row-level locking, and Stripe payment webhooks.',
-    technologies: ['React', 'Node.js', 'PostgreSQL', 'Redis', 'Stripe', 'AWS S3'],
-    features: [
-      'Real-time inventory management',
-      'Secure payment processing',
-      'Order tracking system',
-      'Admin analytics dashboard',
-      'Email notification system'
-    ],
-    impact: {
-      metric: 'Accessablity',
-      value: 'Store Management',
-      description: 'easy management of store data'
-    },
-    githubUrl: '#',
-    liveUrl: '#',
-    unlockDelay: 800
-  },
+  
   {
     id: 'project-4',
     title: 'Custom PC Builder Store',

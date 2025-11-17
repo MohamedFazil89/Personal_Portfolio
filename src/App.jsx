@@ -25,6 +25,8 @@ function App() {
     grid: true
   });
 
+  
+
   useEffect(() => {
     // Import Google Fonts for cyber aesthetic
     const link = document.createElement('link');
